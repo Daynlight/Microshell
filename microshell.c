@@ -158,6 +158,9 @@ void vector_set(struct vector* vector, char* data, unsigned int index){
 // In this project we use unordered_map to store comands as keys
 // and paths to executables. Every key is unique.
 
+//// Addition ////
+// [Hash map with SHA256](https://github.com/Daynlight/CCrypt/blob/main/CCrypt/Struct/unordered_map.h)
+
 //// Optimization: ////
 // * [NOTE] Better hash
 
