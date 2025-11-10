@@ -309,20 +309,12 @@ void printInfo(){
 void printFeatures(){
   printf(COLOR("Features:\n", "33"));
   printf(COLOR("* Text Coloring\n"
-               "", "32"));
+               "* Current Path\n"
+               "* User Name\n", "32"));
 
   fflush(stdout); 
 };
 
-
-
-///////////////////////////
-///////// Helpers /////////
-///////////////////////////
-void sigint_handler(int sig){
-  microshellExit();
-  exit(EXIT_FAILURE);
-};
 
 
 void getUserName(){
@@ -371,6 +363,18 @@ void getCurrentPath(){
   pathToString();
 };
 
+void sigint_handler(int sig){
+  microshellExit();
+  exit(EXIT_FAILURE);
+};
+
+
+
+
+
+
+
+
 
 ///////////////////////////
 ////// MainExecutable /////
@@ -391,7 +395,6 @@ int main(){
     printf("\n");
 
 
-    printf("%s\n", command);
   };
   
   microshellExit();
