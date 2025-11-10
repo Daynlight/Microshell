@@ -373,7 +373,7 @@ void getCurrentPath(){
 ////////////////
 void sigint_handler(int sig){
   microshellExit();
-  exit(EXIT_FAILURE);
+  exit(EXIT_SUCCESS);
 };
 
 
