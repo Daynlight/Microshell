@@ -35,8 +35,8 @@ Do zaliczenia wystarczy zdobyć **min. 18 punktów** – czyli zrealizować wszy
 - [x] Nazwa użytkownika
 - [x] znak zachęty ```[{path}] $```
 - [ ] cd *
-- [ ] exit *
-- [x] help * : Info + Features
+- [x] exit *
+- [x] help * : Info + Features + Commands
 - [ ] kolorwaowanie tekstu dla parametrów i "", (), [], {}, etc.
 - [ ] uruchamianie z **PATH** * : ```fork + exec*()```
 - [ ] komunikat błędu * : gdy nie możliwe zinterpretowanie pol

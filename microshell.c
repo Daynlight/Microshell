@@ -290,7 +290,7 @@ char* username_string;
 /////////////////////////////////////////////////////////
 void microshellExit(){
   running = 0;
-  printf(COLOR("\nMicroshell Exit!!\n", "31"));
+  printf(COLOR("Microshell Exit!!\n", "31"));
   fflush(stdout);
 }
 
@@ -317,9 +317,23 @@ void printFeatures(){
   fflush(stdout); 
 };
 
+void printCommands(){
+  printf(COLOR("Commands:\n", "33"));
+  printf(COLOR("* help - show command list and info\n"
+               "* exit - exit from microshell\n", "32"));
+
+  fflush(stdout); 
+};
+
+
+
+//////////////////
+//// UserName ////
+/////////////////
 void getUserName(){
   username_string = getlogin();
 };
+
 
 
 //////////////
@@ -368,6 +382,26 @@ void getCurrentPath(){
 
 
 
+//////////////////
+//// Commands ////
+//////////////////
+void commandParser(char* command){
+  if(strcmp(command, "exit") == 0){
+    microshellExit();
+    exit(EXIT_SUCCESS);
+  }
+  else if(strcmp(command, "help") == 0){
+    printInfo();
+    printFeatures();
+    printCommands();  
+  }
+  else{
+
+  }
+};
+
+
+
 ////////////////
 //// Helper ////
 ////////////////
@@ -375,6 +409,7 @@ void sigint_handler(int sig){
   microshellExit();
   exit(EXIT_SUCCESS);
 };
+
 
 
 
@@ -402,7 +437,7 @@ int main(){
     scanf("%s", command);
     printf("\n");
 
-
+    commandParser(command);
   };
   
   microshellExit();
