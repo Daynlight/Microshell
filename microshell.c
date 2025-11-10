@@ -38,23 +38,28 @@
 ///////// vector /////////
 //////////////////////////
 //// IDEA ////
-//  We have structure vector that contains
-// information about vector and pointer to
-// our data
-//  On add if we don't have enough space
-// we resize vector by creating new and 
-// coping data from previous, then deleting
-// old one and swap with new one
-//  Data can be any type soo we have
-// to use char*
-// For add element we have to cast type to
-// char* and copy them to next free cell 
-// For getting element we need to calculate
-// offset = index * size_of_el then copy it
-// to out char*
+// Vector is dynamic array that allows 
+// storing dynamic data that can change with time
+// We want it for unordered_map, path, etc.
+
+//// How it works: ////
+// We have data and we don't know how much we have left
+// We add element as long as we have space
+// If we use all of our space we just create next 
+// bigger buffer and copy data to them. After that
+// we delete old buffer and swap with new one.
+// In this way we have unlimited memory to use.
+
 //// TL;TR ////
-// * We have to use char* for operate on any type
-// * When we don't have enough space just resize
+// * When we use all of space we have just create new bigger want and swap them
+
+//// In this project: ////
+// * Used for unordered_map for storing commands and paths.
+// * For our current path.
+
+//// Optimization: ////
+// * [NOTE] reserve function
+// * [NOTE] cache size to file and use this info to reserve at start
 
 struct vector{
   unsigned int cap;
@@ -119,25 +124,42 @@ void vector_set(struct vector* vector, char* data, unsigned int index){
 ///// unordered_map /////
 /////////////////////////
 //// IDEA ////
-// We have vector with data
-// We have also buckets and hash function
-// When element add we:
-// 1) add element to vector and save index
-// 2) calculate hash for element in our situation cahr[COMMANDSIZE]
-// 4) calculate hash % buckets
-// 5) add index with char[COMMANDSIZE] to bucket
-// When we search for el:
-// 1) we calculate hash for element
-// 2) calculate hash % buckets
-// 3) search for element in bucket
-// 4) if found return index else -1
+// We want fast way to find path from command
+// unordered_map allow us to make fast lookup
+// soo it is prefect structure to use
+
+//// How it works: ////
+// First we create vector with our real data
+// in this case paths to commands
+// Now to find path from command we have to 
+// iterate through them.
+// We will store additional informations in
+// buckets. Bucket is vector where we store 
+// keys and index to data in our main data
+// vector. Now we add hash function when we
+// want to find data instead of iterate
+// through all of them we hash key and 
+// make modulo BUCKETS to find bucket
+// where key is stored. Hashing always
+// gives the same results soo for the
+// same name we always access the same bucket
+// Instead of iterate for every element we
+// iterate only in one bucket.
+// More buckets = less iterations.
+// Also quality of hash is important
+// if hash is good then we separate keys in
+// better way and we have less iteration to do.
+
 //// TL;TR ////
-// * We create buckets where we store references to index in array
-// * This makes search O(1)
-//// Note ////
-// We dont need whole unordered_map for searching we just need to check
-// if it exists, but I want implement unordered_map for learning purposes 
-// hash_fun now is simple better would be sha256 better hash => better buckets distribution
+// * We hash key and save them with index to real data in bucket
+// * When we search for them we only search in one bucket
+
+//// In this project: ////
+// In this project we use unordered_map to store comands as keys
+// and paths to executables. Every key is unique.
+
+//// Optimization: ////
+// * [NOTE] Better hash
 
 struct bucket_record{
   char key[KEYSIZE];                  // key
