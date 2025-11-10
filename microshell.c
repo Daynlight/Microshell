@@ -105,8 +105,13 @@ void vector_emplace_back(struct vector* vector, char* data){
 };
 
 void vector_pop(struct vector* vector, char* out){
+  if (vector->size == 0) {
+    fprintf(stderr, "Error: cannot pop from empty vector\n");
+    return;
+  };
+
   vector->size--;
-  memcpy(out, &vector->data[vector->size], vector->size_of_el);
+  memcpy(out, vector->data + vector->size * vector->size_of_el, vector->size_of_el);
 };
 
 void vector_get(struct vector* vector, char* out, unsigned int index){
@@ -331,34 +336,39 @@ void pathToVector(char* current_path){
 
   for(int i = 1; i < current_path_size; i++){
     if(current_path[i] != '/'){
-      strcat(folder, &current_path[i]);
+      char ch[2] = {0};
+      ch[0] = current_path[i];
+      strcat(folder, &ch[0]);
     }
     else{
       vector_emplace_back(&path_vector, folder);
       memset(folder, 0, MAXDIRSIZE);
     };
   };
+  vector_emplace_back(&path_vector, folder);
 };
 
 void pathToString(){
-  for(int i = 1; i < path_vector.size; i++){
-    strcpy(path_string, "/");
+  memset(path_string, 0 , MAXDIRSIZE * MAXDEPTH);
+  for(int i = 0; i < path_vector.size; i++){
+    strcat(path_string, "/");
+
     char directory[MAXDIRSIZE] = {0};
     vector_get(&path_vector, directory, i);
-    strcpy(path_string, directory);
+    strcat(path_string, directory);
   };
   path_string[strlen(path_string)] = '\0';
 };
 
 void getCurrentPath(){
   vector_destroy(&path_vector);
-  vector_init(&path_vector, sizeof(MAXDIRSIZE));
+  vector_init(&path_vector, MAXDIRSIZE);
   
   char current_path[MAXDIRSIZE * MAXDEPTH] = "";
   getcwd(current_path, MAXDIRSIZE * MAXDEPTH);
 
   pathToVector(current_path);
-  memcpy(path_string, current_path, strlen(current_path));
+  pathToString();
 };
 
 
