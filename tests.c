@@ -10,6 +10,7 @@ unsigned int passed = 0;
     printf(COLOR("FAILURE: "str" %d == %d\n", "31"), x, y); \
   else \
     passed++; \
+  fflush(stdout); 
 
 
 
@@ -62,22 +63,19 @@ void unordered_map_test(){
   };
   struct unordered_map map;
 
-  unordered_map_init(&map);
+  unordered_map_init(&map, sizeof(struct Vec2));
   
-  char v1_name[] = "vec1";
-  char v2_name[] = "vec2";
-
   struct Vec2 v1 = {2, 1};
   struct Vec2 v2 = {3, 5};
 
-  unordered_map_set(&map, (char*)&v1, v1_name);
-  unordered_map_set(&map, (char*)&v2, v2_name);
+  unordered_map_set(&map, (char*)&v1, "vec1");
+  unordered_map_set(&map, (char*)&v2, "vec2");
 
   struct Vec2 v1_t;
   struct Vec2 v2_t;
 
-  unordered_map_get(&map, (char*)&v1_t, v1_name);
-  unordered_map_get(&map, (char*)&v2_t, v2_name);
+  unordered_map_get(&map, (char*)&v1_t, "vec1");
+  unordered_map_get(&map, (char*)&v2_t, "vec2");
 
 
   assertEQ("Unordered_map: Compare Vec2", v1.x, v1_t.x);
@@ -87,8 +85,8 @@ void unordered_map_test(){
 
 
   v1.x = 21;
-  unordered_map_set(&map, (char*)&v1, v1_name);
-  unordered_map_get(&map, (char*)&v1_t, v1_name);
+  unordered_map_set(&map, (char*)&v1, "vec1");
+  unordered_map_get(&map, (char*)&v1_t, "vec1");
 
   assertEQ("Unordered_map: Compare Vec2", v1.x, v1_t.x);
   assertEQ("Unordered_map: Compare Vec2", v1.y, v1_t.y);
@@ -117,6 +115,6 @@ int main(){
   
   if(passed != total)
     return -1;
-    
+
   return 0;
 };
