@@ -104,6 +104,11 @@ void vector_emplace_back(struct vector* vector, char* data){
   vector->size++;
 };
 
+void vector_pop(struct vector* vector, char* out){
+  vector->size--;
+  memcpy(out, &vector->data[vector->size], vector->size_of_el);
+};
+
 void vector_get(struct vector* vector, char* out, unsigned int index){
   if(index >= vector->size) {
     fprintf(stderr, "vector_get error: index %u out of range (size=%u)\n",
