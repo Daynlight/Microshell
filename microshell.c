@@ -17,7 +17,10 @@
 
 #define MAXDIRSIZE 255
 #define MAXDEPTH 32
+#define MAXUSERNAME 255
+
 #define COMMANDSIZE 100
+
 #define KEYSIZE 100
 #define BUCKETS 10
 
@@ -268,7 +271,7 @@ void unordered_map_set(struct unordered_map* unordered_map, char* data, char* ke
 char running = 1;
 struct vector path_vector;
 char path_string[MAXDEPTH * MAXDIRSIZE] = {0};
-
+char* username_string;
 
 
 ///////////////////////////
@@ -309,6 +312,11 @@ void printFeatures(){
 void sigint_handler(int sig){
   microshellExit();
   exit(EXIT_FAILURE);
+};
+
+
+void getUserName(){
+  username_string = getlogin();
 };
 
 
@@ -356,13 +364,14 @@ void getCurrentPath(){
 int main(){
   signal(SIGINT, sigint_handler);
 
+  getUserName();
   getCurrentPath();
   printInfo();
   printFeatures();
 
   while (running) {
     char command[COMMANDSIZE] = {0};
-    printf("[%s]$ ", path_string);
+    printf("[%s](%s) $ ", path_string, username_string);
     scanf("%s", command);
     printf("\n");
 

@@ -32,8 +32,8 @@ Do zaliczenia wystarczy zdobyć **min. 18 punktów** – czyli zrealizować wszy
 ---
 
 ## TODO
-- [ ] Nazwa użytkownika
-- [ ] znak zachęty ```[{path}] $```
+- [x] Nazwa użytkownika
+- [x] znak zachęty ```[{path}] $```
 - [ ] cd 
 - [ ] exit
 - [ ] help: Info + Features
@@ -47,6 +47,8 @@ Do zaliczenia wystarczy zdobyć **min. 18 punktów** – czyli zrealizować wszy
 - [ ] stzałki historii
 - [ ] dwa inne wybrane polecenia
 - [ ] render engine
+- [ ] processing big files
+- [ ] cp
 
 
 ## Najczęstsze błędy
