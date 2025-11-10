@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 
 
@@ -14,11 +15,13 @@
 #define VERSION "1.0.0"
 #define AUTHOR "Daniel Stodulski"
 
+#define MAXDIRSIZE 255
+#define MAXDEPTH 32
 #define COMMANDSIZE 100
 #define KEYSIZE 100
 #define BUCKETS 10
 
-// Colors
+// Colorsf
 // 30 - Black
 // 31 - Red
 // 32 - Green
@@ -255,10 +258,16 @@ void unordered_map_set(struct unordered_map* unordered_map, char* data, char* ke
 
 
 
+
+
+
+
 ///////////////////////////
 ///////// Globals /////////
 ///////////////////////////
 char running = 1;
+struct vector path_vector;
+char path_string[MAXDEPTH * MAXDIRSIZE] = {0};
 
 
 
@@ -303,6 +312,42 @@ void sigint_handler(int sig){
 };
 
 
+void pathToVector(char* current_path){
+  unsigned int current_path_size = strlen(current_path);
+  char folder[MAXDIRSIZE] = {0};
+
+  for(int i = 1; i < current_path_size; i++){
+    if(current_path[i] != '/'){
+      strcat(folder, &current_path[i]);
+    }
+    else{
+      vector_emplace_back(&path_vector, folder);
+      memset(folder, 0, MAXDIRSIZE);
+    };
+  };
+};
+
+void pathToString(){
+  for(int i = 1; i < path_vector.size; i++){
+    strcpy(path_string, "/");
+    char directory[MAXDIRSIZE] = {0};
+    vector_get(&path_vector, directory, i);
+    strcpy(path_string, directory);
+  };
+  path_string[strlen(path_string)] = '\0';
+};
+
+void getCurrentPath(){
+  vector_destroy(&path_vector);
+  vector_init(&path_vector, sizeof(MAXDIRSIZE));
+  
+  char current_path[MAXDIRSIZE * MAXDEPTH] = "";
+  getcwd(current_path, MAXDIRSIZE * MAXDEPTH);
+
+  pathToVector(current_path);
+  memcpy(path_string, current_path, strlen(current_path));
+};
+
 
 ///////////////////////////
 ////// MainExecutable /////
@@ -311,17 +356,18 @@ void sigint_handler(int sig){
 int main(){
   signal(SIGINT, sigint_handler);
 
+  getCurrentPath();
   printInfo();
   printFeatures();
 
   while (running) {
     char command[COMMANDSIZE] = {0};
-    printf("$ ");
+    printf("[%s]$ ", path_string);
     scanf("%s", command);
     printf("\n");
 
 
-    printf("%s", command);
+    printf("%s\n", command);
   };
   
   microshellExit();
