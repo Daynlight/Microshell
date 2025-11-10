@@ -7,3 +7,11 @@ set(src
 )
 
 add_executable(Microshell ${src})
+
+project(MicroshellTests LANGUAGES C)
+
+set(src_tests
+  tests.c
+)
+
+add_executable(MicroshellTests ${src_tests})
