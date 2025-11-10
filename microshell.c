@@ -13,7 +13,9 @@
 ///////////////////////////
 #define VERSION "1.0.0"
 #define AUTHOR "Daniel Stodulski"
+
 #define COMMANDSIZE 100
+#define BUCKETS 10
 
 // Colors
 // 30 - Black
@@ -131,9 +133,39 @@ void vector_set(struct vector* vector, char* data, unsigned int index){
 //// TL;TR ////
 // * We create buckets where we store references to index in array
 // * This makes search O(1)
+//// Note ////
+// We dont need whole unordered_map for searching we just need to check
+// if it exists, but I want implement unordered_map for learning purposes 
 
+struct bucket_record{
+  char key[COMMANDSIZE];
+  unsigned int index;
+};
 
+struct unordered_map{
+  struct vector data;                 // type of bucket_record.key
+  struct vector buckets[BUCKETS];     // type of bucket_record
+};
 
+void unordered_map_init(struct unordered_map* unordered_map){
+  vector_init(&unordered_map->data, sizeof(char) * COMMANDSIZE);
+  for(int i = 0; i < BUCKETS; i++)
+    vector_init(&unordered_map->buckets[i], sizeof(struct bucket_record));
+};
+
+void unordered_map_destroy(struct unordered_map* unordered_map){
+  vector_destroy(&unordered_map->data);
+  for(int i = 0; i < BUCKETS; i++)
+    vector_destroy(&unordered_map->buckets[i]);
+};
+
+void unordered_map_get(struct unordered_map* unordered_map, char* out, char* key){
+
+};
+
+void unordered_map_set(struct unordered_map* unordered_map, char* data, char* key){
+
+};
 
 
 

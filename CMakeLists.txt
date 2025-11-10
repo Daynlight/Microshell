@@ -15,3 +15,6 @@ set(src_tests
 )
 
 add_executable(MicroshellTests ${src_tests})
+
+enable_testing()
+add_test(NAME MicroshellTests COMMAND MicroshellTests)
