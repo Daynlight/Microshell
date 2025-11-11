@@ -36,10 +36,11 @@ Do zaliczenia wystarczy zdobyć **min. 18 punktów** – czyli zrealizować wszy
 - [x] znak zachęty ```[{path}] $```
 - [ ] cd *
 - [x] exit *
-- [x] help * : Info + Features + Commands
-- [ ] kolorwaowanie tekstu dla parametrów i "", (), [], {}, etc.
 - [ ] uruchamianie z **PATH** * : ```fork + exec*()```
 - [ ] komunikat błędu * : gdy nie możliwe zinterpretowanie pol
+- [x] help * : Info + Features + Commands
+
+- [ ] kolorwaowanie tekstu dla parametrów i "", (), [], {}, etc.
 - [ ] uzupełnianie komendy **leks sort**
 - [ ] parametry komendy
 - [ ] ```Ctrl + Z``` zatrzymanie procesu

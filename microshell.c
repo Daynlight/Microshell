@@ -366,6 +366,10 @@ void pathToString(){
     vector_get(&path_vector, directory, i);
     strcat(path_string, directory);
   };
+
+  if(path_vector.size <= 0)
+    strcat(path_string, "/");
+
   path_string[strlen(path_string)] = '\0';
 };
 
@@ -385,15 +389,37 @@ void getCurrentPath(){
 //////////////////
 //// Commands ////
 //////////////////
+void commandCd(char* command){
+  char path[MAXDIRSIZE * MAXDEPTH] = {0};
+  strncpy(path, command + 3, MAXDIRSIZE * MAXDEPTH);
+  printf("%s\n", path);
+  path[strlen(path) - 1] = '\0';
+
+  if(path_vector.size > 0 && strcmp(path, "..") == 0){
+      char temp[MAXDIRSIZE];
+      vector_pop(&path_vector, temp);
+    };
+
+    // if(chdir(path) != 0){
+    //   printf(COLOR("Error: No such file or directory\n", "31"));
+    //   fflush(stdout);
+    // };
+
+  pathToString();
+};
+
 void commandParser(char* command){
-  if(strcmp(command, "exit") == 0){
+  if(strncmp(command, "exit", 4) == 0){
     microshellExit();
     exit(EXIT_SUCCESS);
   }
-  else if(strcmp(command, "help") == 0){
+  else if(strncmp(command, "help", 4) == 0){
     printInfo();
     printFeatures();
     printCommands();  
+  }
+  else if(strncmp(command, "cd", 2) == 0){
+    commandCd(command);
   }
   else{
 
@@ -406,6 +432,7 @@ void commandParser(char* command){
 //// Helper ////
 ////////////////
 void sigint_handler(int sig){
+  printf("\n");
   microshellExit();
   exit(EXIT_SUCCESS);
 };
@@ -434,8 +461,7 @@ int main(){
   while (running) {
     char command[COMMANDSIZE] = {0};
     printf("[%s](%s) $ ", path_string, username_string);
-    scanf("%s", command);
-    printf("\n");
+    fgets(command, COMMANDSIZE, stdin);
 
     commandParser(command);
   };
