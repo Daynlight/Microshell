@@ -343,22 +343,32 @@ void pathToVector(char* current_path){
   unsigned int current_path_size = strlen(current_path);
   char folder[MAXDIRSIZE] = {0};
 
-  for(int i = 1; i < current_path_size; i++){
+  for(int i = 0; i < current_path_size; i++){
     if(current_path[i] != '/'){
       char ch[2] = {0};
       ch[0] = current_path[i];
       strcat(folder, &ch[0]);
     }
     else{
-      vector_emplace_back(&path_vector, folder);
+      if(strncmp(folder, "..", 2) == 0){
+        if(path_vector.size >= 1){
+          char temp[MAXDIRSIZE];
+          vector_pop(&path_vector, temp);
+        }
+      }
+      else{
+        vector_emplace_back(&path_vector, folder);
+      }
       memset(folder, 0, MAXDIRSIZE);
     };
   };
+  
   vector_emplace_back(&path_vector, folder);
 };
 
 void pathToString(){
   memset(path_string, 0 , MAXDIRSIZE * MAXDEPTH);
+
   for(int i = 0; i < path_vector.size; i++){
     strcat(path_string, "/");
 
@@ -393,17 +403,19 @@ void commandCd(char* command){
   char path[MAXDIRSIZE * MAXDEPTH] = {0};
   strncpy(path, command + 3, MAXDIRSIZE * MAXDEPTH);
   printf("%s\n", path);
-  path[strlen(path) - 1] = '\0';
+  path[strlen(path) - 1] = '/';
 
-  if(path_vector.size > 0 && strcmp(path, "..") == 0){
-      char temp[MAXDIRSIZE];
-      vector_pop(&path_vector, temp);
-    };
+  pathToVector(path);
 
-    // if(chdir(path) != 0){
-    //   printf(COLOR("Error: No such file or directory\n", "31"));
-    //   fflush(stdout);
-    // };
+  // if(path_vector.size > 0 && strcmp(path, "..") == 0){
+  //     char temp[MAXDIRSIZE];
+  //     vector_pop(&path_vector, temp);
+  //   };
+
+  // if(chdir(path) != 0){
+  //   printf(COLOR("Error: No such file or directory\n", "31"));
+  //   fflush(stdout);
+  // };
 
   pathToString();
 };
