@@ -50,6 +50,7 @@ Do zaliczenia wystarczy zdobyć **min. 18 punktów** – czyli zrealizować wszy
 - [ ] render engine
 - [ ] processing big files
 - [ ] cp
+- [ ] Lz4 compressionn
 
 
 ## Najczęstsze błędy
