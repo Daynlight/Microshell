@@ -110,7 +110,22 @@
 // [ ] Update program to use new structures
 // [ ] Functions from Arch
 
+// [ ] coloring text for params, "", (), {}. [].
+// [ ] arrows for history/autocomplete
+// [ ] ^ two more commands
+// [ ] cp
 
+//// MVP ////
+// [x] User name
+// [x] ^ encouragement sign {path} $
+// [ ] ^ cd
+// [x] ^ exit
+// [ ] ^ execute form PATH: ```fork + exec*()```
+// [ ] ^ Error Comuniact: When can't parsee command
+// [x] ^ help: Info + Features + Commands
+// [ ] history
+// [ ] autocomplete with the most relevant
+// [ ] ```Ctrl + Z``` process exit or program
 
 
 
