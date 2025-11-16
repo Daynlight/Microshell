@@ -23,8 +23,6 @@
 // * erase
 // * get
 // * set
-//// Optimization: ////
-// * reserve - optimization for large data
 
 
 //////////////////////////
@@ -45,9 +43,35 @@
 // * find
 // * erase
 // * get_ptr
-// Optimization:
-// * store data in continsuse array on heap
-// * that heap memory is char* and we can use it to iteration
+
+
+/////////////////////////
+///// unordered_map /////
+/////////////////////////
+//// IDEA ////
+// We want a fast way to find the value from a kay.
+// An unordered_map gives O(1) average lookup time,
+// so it is fast to finding values from keys.
+
+//// How it works: ////
+// In our implementation we keep the actual data in a main vector.
+//
+// To avoid searching through the whole vector,
+// we use a hash table made of buckets.
+// A bucket is a small vector that stores:
+//   - the key (command name)
+//   - the index pointing to the real data
+//
+// When we insert or search:
+//   * We compute the hash of the key
+//   * We take (hash % BUCKETS) to choose the bucket
+//    * We only search inside that one bucket
+//    * We add value to that one bucket with index
+//
+// A good hash function spreads keys evenly,
+// so buckets stay small and lookups are fast.
+// More buckets means fewer collisions,
+// at the cost of more memory.
 
 
 //////////////////////////
@@ -58,13 +82,10 @@
 // build path
 
 
-///////////////////////////////////////////////
-/////////////////// Logic /////////////////////
-///////////////////////////////////////////////
-// String class is Decorated from Vector
-// Path class is Decorated from Vector
 
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 
@@ -91,6 +112,9 @@
 
 #define COMMANDSIZE 100
 
+#define KEYSIZE 32
+#define BUCKETS 10
+
 // Colors
 // 30 - Black
 // 31 - Red
@@ -100,8 +124,11 @@
 // 35 - Magenta
 // 36 - Cyan
 // 37 - White
-#define COLOR(x, c) "\033[0;"c"m"x"\033[0;37m"
-
+#ifndef __cplusplus
+  #define COLOR(x, c) "\033[0;"c"m"x"\033[0;37m"
+#else
+  #define COLOR(x, c) x
+#endif
 
 
 /////////////////////////////////////////////////////////////////////////
@@ -119,14 +146,14 @@ struct vector{
 
 void vector_init(struct vector* vector, unsigned int size_of_el){
   vector->size_of_el = size_of_el;
-  vector->data = calloc(1, vector->size_of_el);
+  vector->data = (char*)calloc(1, vector->size_of_el);
   vector->cap = 1;
   vector->size = 0;
 };
 
 void vector_reserve(struct vector* vector, unsigned int cap){
   unsigned int new_cap = vector->cap + cap; 
-  char* temp = calloc(new_cap, vector->size_of_el);
+  char* temp = (char*)calloc(new_cap, vector->size_of_el);
   
   memcpy(temp, vector->data, vector->size * vector->size_of_el);
   free(vector->data);
@@ -141,7 +168,7 @@ void vector_destroy(struct vector* vector){
 
 void vector_resize(struct vector* vector) {
   unsigned int new_cap = vector->cap * 2 + 1; 
-  char* temp = calloc(new_cap, vector->size_of_el);
+  char* temp = (char*)calloc(new_cap, vector->size_of_el);
   
   memcpy(temp, vector->data, vector->size * vector->size_of_el);
   free(vector->data);
@@ -225,6 +252,107 @@ void string_get_ptr(struct string* string){
 };
 
 
+/////////////////////////
+///// unordered_map /////
+/////////////////////////
+struct bucket_record{
+  char key[KEYSIZE];                  // key
+  unsigned int index;                 // localization
+};
+
+struct unordered_map{
+  struct vector data;                 // real data
+  struct vector buckets[BUCKETS];     // type of bucket_record
+};
+
+
+unsigned int unordered_map_hash_fun(const char* key){
+  unsigned char hash[32] = {0};
+  unsigned int keysize = sizeof(key);
+  if(sizeof(key) < 32)
+    return -1;
+
+  for(int i = 0; i < 32; i++)
+    hash[i] = key[i];
+
+
+  unsigned int result = 0;
+  for (int i = 0; i < 4; ++i)
+      result = (result << 8) | hash[i];
+
+  return result;
+};
+
+void unordered_map_init(struct unordered_map* unordered_map, unsigned int size_of_el){
+  vector_init(&unordered_map->data, size_of_el);
+  for(int i = 0; i < BUCKETS; i++)
+    vector_init(&unordered_map->buckets[i], sizeof(struct bucket_record));
+};
+
+void unordered_map_destroy(struct unordered_map* unordered_map){
+  vector_destroy(&unordered_map->data);
+  for(int i = 0; i < BUCKETS; i++)
+    vector_destroy(&unordered_map->buckets[i]);
+};
+
+int unordered_map_get(struct unordered_map* unordered_map, char* out, const char* key){
+  unsigned int hash = unordered_map_hash_fun(key);
+  unsigned int bucket_id = hash % BUCKETS;
+
+  unsigned int index = 0;
+  for(int i = 0; i < unordered_map->buckets[bucket_id].size; i++){    // look for key in bucket
+    index = i;
+    
+    struct bucket_record record;
+    vector_get(&unordered_map->buckets[bucket_id], (char*)&record, i);
+
+    if(strcmp(record.key, key) == 0)
+      break;
+    else
+      index++;
+  }
+
+  if(index >= unordered_map->buckets[bucket_id].size){  // don't found
+    return -1;
+  }
+  else{                                                     // found
+    struct bucket_record record;
+    vector_get(&unordered_map->buckets[bucket_id], (char*)&record, index);
+    vector_get(&unordered_map->data, out, record.index);
+  };
+  return 0;
+};
+
+void unordered_map_set(struct unordered_map* unordered_map, char* data, const char* key){
+  unsigned int hash = unordered_map_hash_fun(key);
+  unsigned int bucket_id = hash % BUCKETS;
+
+  unsigned int index = 0;
+  for(int i = 0; i < unordered_map->buckets[bucket_id].size; i++){    // look for key in bucket
+    index = i;
+    
+    struct bucket_record record;
+    vector_get(&unordered_map->buckets[bucket_id], (char*)&record, i);
+
+    if(strcmp(record.key, key) == 0)
+      break;
+    else
+      index++;
+  }
+
+  if(index >= unordered_map->buckets[bucket_id].size){  // don't found
+    struct bucket_record record;
+    record.index = unordered_map->data.size;
+    memcpy(record.key, key, KEYSIZE);
+    vector_push(&unordered_map->buckets[bucket_id], (char*)&record);
+    vector_push(&unordered_map->data, data);
+  }
+  else{                                                     // found
+    vector_set(&unordered_map->data, data, index);
+  };
+};
+
+
 
 
 
@@ -255,9 +383,9 @@ void microshellExit(){
 ///////////////
 void printInfo(){
   printf(COLOR("Info:\n", "33"));
-  printf(COLOR("VERSION: "VERSION"\n", "32")
-         COLOR("Author: "AUTHOR"\n", "32")
-        "");
+  printf(COLOR("VERSION: " VERSION "\n", "32")
+         COLOR("Author: " AUTHOR "\n", "32")
+        );
 
   fflush(stdout); 
 };
@@ -436,4 +564,9 @@ int main(){
 
   return 0;
 };
+#endif
+
+
+#ifdef __cplusplus
+}
 #endif

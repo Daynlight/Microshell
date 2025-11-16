@@ -1,6 +1,7 @@
 #include "UnitTests/assert.h"
 #include "UnitTests/vector.h"
 #include "UnitTests/string.h"
+#include "UnitTests/unordered_map.h"
 
 
 

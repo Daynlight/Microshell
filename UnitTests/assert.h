@@ -10,7 +10,7 @@ unsigned int passed = 0;
 #define assertEQ(str, x, y) \
   total++; \
   if(x != y) \
-    printf(COLOR("FAILURE: "str" %d == %d\n", "31"), x, y); \
+    printf(COLOR("FAILURE: " str " %d == %d\n", "31"), x, y); \
   else \
     passed++; \
   fflush(stdout); 
@@ -19,9 +19,9 @@ unsigned int passed = 0;
 #define assertResults(str) \
   all_total++; \
   if(passed == total) \
-    printf(COLOR("== "str" == \n%d/%d passed\n", "32"), passed, total); \
+    printf(COLOR("== " str " == \n%d/%d passed\n", "32"), passed, total); \
   else \
-    printf(COLOR("== "str" == \n%d/%d passed\n", "34"), passed, total); \
+    printf(COLOR("== " str " == \n%d/%d passed\n", "34"), passed, total); \
   if(passed == total) \
     all_passed++;
   
