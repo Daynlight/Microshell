@@ -64,7 +64,7 @@
 //////////////////////////
 //// IDEA ////
 // Dynamic array of strings that contains folders and provide 
-// build path
+// whole path
 
 
 
