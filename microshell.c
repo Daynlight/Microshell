@@ -100,22 +100,30 @@
 ///////////////////////////////////////////////////////////////
 //////////////////////////// TODO /////////////////////////////
 ///////////////////////////////////////////////////////////////
-// [ ] Workflow for every system (Cross-Platform update)
-// [ ] Architecture Overview logic part
+//// Structures ////
 // [ ] Use String
 // [ ] Path Struct
 // [ ] Dequeue Struct
 // [ ] Stack Struct
 // [ ] Prefix Array Struct
 // [ ] Update program to use new structures
-// [ ] Functions from Arch
-
-// [ ] coloring text for params, "", (), {}. [].
-// [ ] arrows for history/autocomplete
-// [ ] ^ two more commands
-// [ ] cp
 
 //// MVP ////
+// [ ] Workflow for every system (Cross-Platform update)
+// [ ] Architecture Overview logic part
+// [ ] Input Handler
+// [ ] Input Controller
+// [ ] Command Composer
+// [ ] Command Runner
+// [ ] Task Queue
+// [ ] Task Controller
+// [ ] Env Register
+// [ ] UI Colorer 
+// [ ] UI Composer
+// [ ] Ui Printer
+// [ ] ```Ctrl + Z``` process exit or program
+
+//// Requirements ////
 // [x] User name
 // [x] ^ encouragement sign {path} $
 // [ ] ^ cd
@@ -123,9 +131,22 @@
 // [ ] ^ execute form PATH: ```fork + exec*()```
 // [ ] ^ Error Comuniact: When can't parsee command
 // [x] ^ help: Info + Features + Commands
-// [ ] history
-// [ ] autocomplete with the most relevant
-// [ ] ```Ctrl + Z``` process exit or program
+
+//// Features ////
+// [ ] Data I/O
+// [ ] History Controller
+// [ ] Prefix Controller
+// [ ] Data Controller
+// [ ] Command Predictor
+// [ ] Autocomplete with the most relevant
+// [ ] Task Result
+// [ ] Task Error Handler
+// [ ] UI Error Handler
+// [ ] coloring text for params, "", (), {}. [].
+// [ ] arrows for history/autocomplete
+// [ ] ^ two more commands
+// [ ] cp
+
 
 
 
@@ -366,7 +387,8 @@ void string_erase(struct string* string, unsigned int x, unsigned int y){
   unsigned int prev_size = string->data.size;
 
   memmove(string->data.data + x, string->data.data + y + 1, prev_size - y);
-  memset(string->data.data + x + y + 2, 0, prev_size - size);
+  char terminator[] = "\0";
+  vector_set(&string->data, (char*)&terminator, prev_size - size);
   string->data.size -= size;
 };
 
