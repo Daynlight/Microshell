@@ -109,7 +109,8 @@
 // [ ] Update program to use new structures
 
 //// MVP ////
-// [ ] Workflow for every system (Cross-Platform update)
+// [x] Workflow for every system (Cross-Platform update)
+// [ ] Windows integration (Cross-Platform update)
 // [ ] Architecture Overview logic part
 // [ ] Input Handler
 // [ ] Input Controller
