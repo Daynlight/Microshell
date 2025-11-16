@@ -1,3 +1,79 @@
+/////////////////////////////////////////////////////////////////////////
+///////////////////////// Architecture Overview /////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////
+///////////////// Structures //////////////////
+///////////////////////////////////////////////
+//////////////////////////
+///////// vector /////////
+//////////////////////////
+//// IDEA ////
+// Vector is dynamic array that allows 
+// storing dynamic data that can change with time
+// We want it for unordered_map and string.
+//// Functions: ////
+// * init
+// * destroy
+// * reserve
+// * resize
+// * push
+// * pop
+// * erase
+// * get
+// * set
+
+
+//////////////////////////
+///////// string /////////
+//////////////////////////
+//// IDEA ////
+// Dynamic string with no size limitation
+// We don't know path size and we need strings to dynamicly
+// operate on them without it we waste a lot of memory
+// and can it cause mem overflow
+// In this project:
+// Used for saving dynamic size names and path.
+//// Functions: ////
+// * init
+// * destroy
+// * concat
+// * at
+// * find
+// * erase
+// * get_ptr
+
+
+/////////////////////////
+///// unordered_map /////
+/////////////////////////
+//// IDEA ////
+// We want a fast way to find the value from a kay.
+// An unordered_map gives O(1) average lookup time,
+// so it is fast to finding values from keys.
+//// Functions: ////
+// * init
+// * destroy
+// * get
+// * set
+
+
+//////////////////////////
+////////// path //////////
+//////////////////////////
+//// IDEA ////
+// Dynamic array of strings that contains folders and provide 
+// build path
+
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+
 //////////////////////////////////////////////////////////////////
 //////////////////////////// Headers /////////////////////////////
 //////////////////////////////////////////////////////////////////
@@ -21,7 +97,7 @@
 
 #define COMMANDSIZE 100
 
-#define KEYSIZE 100
+#define KEYSIZE 32
 #define BUCKETS 10
 
 // Colors
@@ -33,8 +109,11 @@
 // 35 - Magenta
 // 36 - Cyan
 // 37 - White
-#define COLOR(x, c) "\033[0;"c"m"x"\033[0;37m"
-
+#ifndef __cplusplus
+  #define COLOR(x, c) "\033[0;"c"m"x"\033[0;37m"
+#else
+  #define COLOR(x, c) x
+#endif
 
 
 /////////////////////////////////////////////////////////////////////////
@@ -43,30 +122,6 @@
 //////////////////////////
 ///////// vector /////////
 //////////////////////////
-//// IDEA ////
-// Vector is dynamic array that allows 
-// storing dynamic data that can change with time
-// We want it for unordered_map, path, etc.
-
-//// How it works: ////
-// We have data and we don't know how much we have left
-// We add element as long as we have space
-// If we use all of our space we just create next 
-// bigger buffer and copy data to them. After that
-// we delete old buffer and swap with new one.
-// In this way we have unlimited memory to use.
-
-//// TL;TR ////
-// * When we use all of space we have just create new bigger want and swap them
-
-//// In this project: ////
-// * Used for unordered_map for storing commands and paths.
-// * For our current path.
-
-//// Optimization: ////
-// * [NOTE] reserve function
-// * [NOTE] cache size to file and use this info to reserve at start
-
 struct vector{
   unsigned int cap;
   unsigned int size;
@@ -76,18 +131,19 @@ struct vector{
 
 void vector_init(struct vector* vector, unsigned int size_of_el){
   vector->size_of_el = size_of_el;
-  vector->data = calloc(1, vector->size_of_el);
+  vector->data = (char*)calloc(1, vector->size_of_el);
   vector->cap = 1;
   vector->size = 0;
 };
 
 void vector_destroy(struct vector* vector){
   free(vector->data);
+  vector->data = NULL;
 };
 
 void vector_resize(struct vector* vector) {
   unsigned int new_cap = vector->cap * 2 + 1; 
-  char* temp = calloc(new_cap, vector->size_of_el);
+  char* temp = (char*)calloc(new_cap, vector->size_of_el);
   
   memcpy(temp, vector->data, vector->size * vector->size_of_el);
   free(vector->data);
@@ -96,22 +152,23 @@ void vector_resize(struct vector* vector) {
   vector->cap = new_cap;
 };
 
-void vector_emplace_back(struct vector* vector, char* data){
+void vector_reserve(struct vector *vector, unsigned int cap){
+  unsigned int new_cap = vector->cap + cap; 
+  char* temp = (char*)calloc(new_cap, vector->size_of_el);
+  
+  memcpy(temp, vector->data, vector->size * vector->size_of_el);
+  free(vector->data);
+
+  vector->data = temp;
+  vector->cap = new_cap;
+};
+
+void vector_emplace_back(struct vector *vector, char *data){
   if(vector->size >= vector->cap)
     vector_resize(vector);
   
   memcpy(vector->data + vector->size * vector->size_of_el, data, vector->size_of_el);
   vector->size++;
-};
-
-void vector_pop(struct vector* vector, char* out){
-  if (vector->size == 0) {
-    fprintf(stderr, "Error: cannot pop from empty vector\n");
-    return;
-  };
-
-  vector->size--;
-  memcpy(out, vector->data + vector->size * vector->size_of_el, vector->size_of_el);
 };
 
 void vector_get(struct vector* vector, char* out, unsigned int index){
@@ -124,6 +181,11 @@ void vector_get(struct vector* vector, char* out, unsigned int index){
   memcpy(out, vector->data + offset, vector->size_of_el);
 };
 
+void vector_pop(struct vector* vector, char* out){
+  vector_get(vector, out, vector->size - 1);
+  vector->size--;
+};
+
 void vector_set(struct vector* vector, char* data, unsigned int index){
   if(index >= vector->size) {
     fprintf(stderr, "vector_set error: index %u out of range (size=%u)\n",
@@ -134,52 +196,54 @@ void vector_set(struct vector* vector, char* data, unsigned int index){
   memcpy(vector->data + offset, data, vector->size_of_el);
 };
 
+void vector_alloc(struct vector *vector, unsigned int size, char *data){
+  unsigned int missing_space = 2 * vector->size + size - vector->cap;
+  vector_reserve(vector, missing_space);
+  for(int i = 0; i < size; i++)
+    vector_emplace_back(vector, data);
+};
+
+
+
+//////////////////////////
+///////// string /////////
+//////////////////////////
+struct string{
+  struct vector data;
+};
+
+void string_init(struct string* string, char* initial_data){
+
+};
+
+void string_destroy(struct string* string){
+
+};
+
+void string_concat(struct string* string){
+
+};
+
+void string_at(struct string* string, unsigned int index){
+
+};
+
+void string_find(struct string* string, char el){
+
+};
+
+void string_erase(struct string* string, unsigned int x, unsigned int y){
+
+};
+
+void string_get_ptr(struct string* string){
+
+};
 
 
 /////////////////////////
 ///// unordered_map /////
 /////////////////////////
-//// IDEA ////
-// We want fast way to find path from command
-// unordered_map allow us to make fast lookup
-// soo it is prefect structure to use
-
-//// How it works: ////
-// First we create vector with our real data
-// in this case paths to commands
-// Now to find path from command we have to 
-// iterate through them.
-// We will store additional informations in
-// buckets. Bucket is vector where we store 
-// keys and index to data in our main data
-// vector. Now we add hash function when we
-// want to find data instead of iterate
-// through all of them we hash key and 
-// make modulo BUCKETS to find bucket
-// where key is stored. Hashing always
-// gives the same results soo for the
-// same name we always access the same bucket
-// Instead of iterate for every element we
-// iterate only in one bucket.
-// More buckets = less iterations.
-// Also quality of hash is important
-// if hash is good then we separate keys in
-// better way and we have less iteration to do.
-
-//// TL;TR ////
-// * We hash key and save them with index to real data in bucket
-// * When we search for them we only search in one bucket
-
-//// In this project: ////
-// In this project we use unordered_map to store comands as keys
-// and paths to executables. Every key is unique.
-
-//// Addition ////
-// [Hash map with SHA256](https://github.com/Daynlight/CCrypt/blob/main/CCrypt/Struct/unordered_map.h)
-
-//// Optimization: ////
-// * [NOTE] Better hash
-
 struct bucket_record{
   char key[KEYSIZE];                  // key
   unsigned int index;                 // localization
@@ -190,15 +254,17 @@ struct unordered_map{
   struct vector buckets[BUCKETS];     // type of bucket_record
 };
 
-unsigned int unordered_map_hash_fun(const char* key) {
-  unsigned long hash = 5381;
+
+unsigned int unordered_map_hash_fun(const char* key){
+  unsigned int hash = 5381;
   int c;
-
-  while ((c = *key++))
-    hash = (hash * 33) + hash + c;
-
-  return (unsigned int)hash;
-};
+  
+  while ((c = *key++)) {
+    hash = ((hash << 5) + hash) + c; // hash * 33 + c
+  }
+  
+  return hash;
+}
 
 void unordered_map_init(struct unordered_map* unordered_map, unsigned int size_of_el){
   vector_init(&unordered_map->data, size_of_el);
@@ -212,7 +278,7 @@ void unordered_map_destroy(struct unordered_map* unordered_map){
     vector_destroy(&unordered_map->buckets[i]);
 };
 
-int unordered_map_get(struct unordered_map* unordered_map, char* out, char* key){
+int unordered_map_get(struct unordered_map* unordered_map, char* out, const char* key){
   unsigned int hash = unordered_map_hash_fun(key);
   unsigned int bucket_id = hash % BUCKETS;
 
@@ -240,7 +306,7 @@ int unordered_map_get(struct unordered_map* unordered_map, char* out, char* key)
   return 0;
 };
 
-void unordered_map_set(struct unordered_map* unordered_map, char* data, char* key){
+void unordered_map_set(struct unordered_map* unordered_map, char* data, const char* key){
   unsigned int hash = unordered_map_hash_fun(key);
   unsigned int bucket_id = hash % BUCKETS;
 
@@ -274,7 +340,6 @@ void unordered_map_set(struct unordered_map* unordered_map, char* data, char* ke
 
 
 
-
 /////////////////////////////////////////////////////////
 //////////////////////// Globals ////////////////////////
 /////////////////////////////////////////////////////////
@@ -301,9 +366,9 @@ void microshellExit(){
 ///////////////
 void printInfo(){
   printf(COLOR("Info:\n", "33"));
-  printf(COLOR("VERSION: "VERSION"\n", "32")
-         COLOR("Author: "AUTHOR"\n", "32")
-        "");
+  printf(COLOR("VERSION: " VERSION "\n", "32")
+         COLOR("Author: " AUTHOR "\n", "32")
+        );
 
   fflush(stdout); 
 };
@@ -343,22 +408,32 @@ void pathToVector(char* current_path){
   unsigned int current_path_size = strlen(current_path);
   char folder[MAXDIRSIZE] = {0};
 
-  for(int i = 1; i < current_path_size; i++){
+  for(int i = 0; i < current_path_size; i++){
     if(current_path[i] != '/'){
       char ch[2] = {0};
       ch[0] = current_path[i];
       strcat(folder, &ch[0]);
     }
     else{
-      vector_emplace_back(&path_vector, folder);
+      if(strncmp(folder, "..", 2) == 0){
+        if(path_vector.size >= 1){
+          char temp[MAXDIRSIZE];
+          vector_pop(&path_vector, temp);
+        }
+      }
+      else{
+        vector_emplace_back(&path_vector, folder);
+      }
       memset(folder, 0, MAXDIRSIZE);
     };
   };
+  
   vector_emplace_back(&path_vector, folder);
 };
 
 void pathToString(){
   memset(path_string, 0 , MAXDIRSIZE * MAXDEPTH);
+
   for(int i = 0; i < path_vector.size; i++){
     strcat(path_string, "/");
 
@@ -366,6 +441,10 @@ void pathToString(){
     vector_get(&path_vector, directory, i);
     strcat(path_string, directory);
   };
+
+  if(path_vector.size <= 0)
+    strcat(path_string, "/");
+
   path_string[strlen(path_string)] = '\0';
 };
 
@@ -385,15 +464,39 @@ void getCurrentPath(){
 //////////////////
 //// Commands ////
 //////////////////
+void commandCd(char* command){
+  char path[MAXDIRSIZE * MAXDEPTH] = {0};
+  strncpy(path, command + 3, MAXDIRSIZE * MAXDEPTH);
+  printf("%s\n", path);
+  path[strlen(path) - 1] = '/';
+
+  pathToVector(path);
+
+  // if(path_vector.size > 0 && strcmp(path, "..") == 0){
+  //     char temp[MAXDIRSIZE];
+  //     vector_pop(&path_vector, temp);
+  //   };
+
+  // if(chdir(path) != 0){
+  //   printf(COLOR("Error: No such file or directory\n", "31"));
+  //   fflush(stdout);
+  // };
+
+  pathToString();
+};
+
 void commandParser(char* command){
-  if(strcmp(command, "exit") == 0){
+  if(strncmp(command, "exit", 4) == 0){
     microshellExit();
     exit(EXIT_SUCCESS);
   }
-  else if(strcmp(command, "help") == 0){
+  else if(strncmp(command, "help", 4) == 0){
     printInfo();
     printFeatures();
     printCommands();  
+  }
+  else if(strncmp(command, "cd", 2) == 0){
+    commandCd(command);
   }
   else{
 
@@ -406,6 +509,7 @@ void commandParser(char* command){
 //// Helper ////
 ////////////////
 void sigint_handler(int sig){
+  printf("\n");
   microshellExit();
   exit(EXIT_SUCCESS);
 };
@@ -434,8 +538,7 @@ int main(){
   while (running) {
     char command[COMMANDSIZE] = {0};
     printf("[%s](%s) $ ", path_string, username_string);
-    scanf("%s", command);
-    printf("\n");
+    fgets(command, COMMANDSIZE, stdin);
 
     commandParser(command);
   };
@@ -444,4 +547,9 @@ int main(){
 
   return 0;
 };
+#endif
+
+
+#ifdef __cplusplus
+}
 #endif
