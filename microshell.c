@@ -265,16 +265,27 @@ void string_concat(struct string* string, struct string* string2){
   };
 };
 
-void string_find(struct string* string, char el){
-
+int string_find(struct string* string, char el){
+  char found = 0;
+  unsigned int i = 0;
+  do{
+    char at = string_at(string, i);
+    if(at == el)
+      return i;
+    
+    i++;
+  }
+  while(i < string->data.size && !found);  
+  
+  return -1;
 };
 
 void string_erase(struct string* string, unsigned int x, unsigned int y){
 
 };
 
-void string_get_ptr(struct string* string){
-
+char* string_get_ptr(struct string* string){
+  return string->data.data;
 };
 
 
