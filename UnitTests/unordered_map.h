@@ -29,7 +29,7 @@ public:
 inline bool Unordered_map::runAll(){
   printf("==== Unordered_map Tests ====\n");
 
-  // unorderedMapHashFun();   // It is not SHA256
+  unorderedMapHashFun();   // It is not SHA256
   unorderedMapInit();
   unorderedMapDestroy();  
   unorderedMapSetAndGet();

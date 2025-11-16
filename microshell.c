@@ -268,21 +268,15 @@ struct unordered_map{
 
 
 unsigned int unordered_map_hash_fun(const char* key){
-  unsigned char hash[32] = {0};
-  unsigned int keysize = sizeof(key);
-  if(sizeof(key) < 32)
-    return -1;
-
-  for(int i = 0; i < 32; i++)
-    hash[i] = key[i];
-
-
-  unsigned int result = 0;
-  for (int i = 0; i < 4; ++i)
-      result = (result << 8) | hash[i];
-
-  return result;
-};
+  unsigned int hash = 5381;
+  int c;
+  
+  while ((c = *key++)) {
+    hash = ((hash << 5) + hash) + c; // hash * 33 + c
+  }
+  
+  return hash;
+}
 
 void unordered_map_init(struct unordered_map* unordered_map, unsigned int size_of_el){
   vector_init(&unordered_map->data, size_of_el);
