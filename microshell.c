@@ -6,7 +6,7 @@
 ///////////////////////////////////////////////////////////////
 ///////////////////////// Structures //////////////////////////
 ///////////////////////////////////////////////////////////////
-// vector, string, prefix array, unordered_map, deque, stack //
+// vector *, string *, path, prefix array, unordered_map *, deque, stack //
 
 //////////////////////////
 ///////// vector /////////
@@ -20,11 +20,15 @@
 // * destroy
 // * reserve
 // * resize
+// * shrink ^
+// * fit    ^
 // * push
 // * pop
 // * erase
+// * clean  ^
 // * get
 // * set
+// * alloc
 
 
 //////////////////////////
@@ -91,10 +95,46 @@
 //// Functions: ////
 
 
+
+
+///////////////////////////////////////////////////////////////
+//////////////////////////// TODO /////////////////////////////
+///////////////////////////////////////////////////////////////
+// [ ] Workflow for every system (Cross-Platform update)
+// [ ] Architecture Overview logic part
+// [ ] Use String
+// [ ] Path Struct
+// [ ] Dequeue Struct
+// [ ] Stack Struct
+// [ ] Prefix Array Struct
+// [ ] Update program to use new structures
+// [ ] Functions from Arch
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 
 //////////////////////////////////////////////////////////////////
@@ -137,6 +177,28 @@ extern "C" {
 #else
   #define COLOR(x, c) x
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /////////////////////////////////////////////////////////////////////////
@@ -186,7 +248,7 @@ void vector_reserve(struct vector *vector, unsigned int cap){
   vector->cap = new_cap;
 };
 
-void vector_emplace_back(struct vector *vector, char *data){
+void vector_push(struct vector *vector, char *data){
   if(vector->size >= vector->cap)
     vector_resize(vector);
   
@@ -223,7 +285,7 @@ void vector_alloc(struct vector *vector, unsigned int size, char *data){
   unsigned int missing_space = 2 * vector->size + size - vector->cap;
   vector_reserve(vector, missing_space);
   for(int i = 0; i < size; i++)
-    vector_emplace_back(vector, data);
+    vector_push(vector, data);
 };
 
 
@@ -240,7 +302,7 @@ void string_init(struct string* string, char* initial_data){
   unsigned int initial_data_size = strlen(initial_data);
   vector_reserve(&string->data, initial_data_size);
   for(int i = 0; i < initial_data_size; i++)
-    vector_emplace_back(&string->data, &initial_data[i]);
+    vector_push(&string->data, &initial_data[i]);
 };
 
 void string_destroy(struct string* string){
@@ -261,7 +323,7 @@ void string_concat(struct string* string, struct string* string2){
 
   for(unsigned int i = 0; i < additional_size; i++){
     char at = string_at(string2, i);
-    vector_emplace_back(&string->data, &at);
+    vector_push(&string->data, &at);
   };
 };
 
@@ -384,13 +446,53 @@ void unordered_map_set(struct unordered_map* unordered_map, char* data, const ch
     struct bucket_record record;
     record.index = unordered_map->data.size;
     memcpy(record.key, key, KEYSIZE);
-    vector_emplace_back(&unordered_map->buckets[bucket_id], (char*)&record);
-    vector_emplace_back(&unordered_map->data, data);
+    vector_push(&unordered_map->buckets[bucket_id], (char*)&record);
+    vector_push(&unordered_map->data, data);
   }
   else{                                                     // found
     vector_set(&unordered_map->data, data, index);
   };
 };
+
+
+/////////////////////////
+///////// path //////////
+/////////////////////////
+
+
+//////////////////////////
+///////// dequeue ////////
+//////////////////////////
+
+
+//////////////////////////
+///////// stack //////////
+//////////////////////////
+
+
+/////////////////////////////////
+///////// prefix array //////////
+/////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -479,13 +581,13 @@ void pathToVector(char* current_path){
         }
       }
       else{
-        vector_emplace_back(&path_vector, folder);
+        vector_push(&path_vector, folder);
       }
       memset(folder, 0, MAXDIRSIZE);
     };
   };
   
-  vector_emplace_back(&path_vector, folder);
+  vector_push(&path_vector, folder);
 };
 
 void pathToString(){
