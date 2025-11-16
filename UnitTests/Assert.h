@@ -128,6 +128,21 @@ public:
 
 
 
+  void isNullptr(const std::string& assertText, char* tested){
+    total++;
+
+    if(tested != nullptr){
+      printf("%s is not nullptr\n", assertText.c_str());
+      return;
+    }
+    else
+      passed++;
+  };
+
+
+
+
+
   void isNotNullptr(const std::string& assertText, const char* tested){
     total++;
 
@@ -138,6 +153,25 @@ public:
     else
       passed++;
   };
+
+
+
+
+
+  void isNotNullptr(const std::string& assertText, char* tested){
+    total++;
+
+    if(tested == nullptr){
+      printf("%s is nullptr\n", assertText.c_str());
+      return;
+    }
+    else
+      passed++;
+  };
+
+
+
+
 
   void clear() { total = 0; passed = 0; };
   bool results(const std::string& text){

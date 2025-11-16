@@ -281,7 +281,16 @@ int string_find(struct string* string, char el){
 };
 
 void string_erase(struct string* string, unsigned int x, unsigned int y){
+  if(x > y){
+    return;
+  };
 
+  unsigned int size = y - x + 1;
+  unsigned int prev_size = string->data.size;
+
+  memmove(string->data.data + x, string->data.data + y + 1, prev_size - y);
+  memset(string->data.data + x + y + 2, 0, prev_size - size);
+  string->data.size -= size;
 };
 
 char* string_get_ptr(struct string* string){

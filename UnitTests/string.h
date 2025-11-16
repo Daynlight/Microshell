@@ -73,8 +73,7 @@ inline void String::stringDestroy() {
   char initial[] = "Hello World";
   string_init(&string, initial);
   string_destroy(&string);
-
-  assert.isNullptr("String::stringDestroy data", (const char*)&string.data);
+  assert.isNullptr("String::stringDestroy data", string.data.data);
 };
 
 
