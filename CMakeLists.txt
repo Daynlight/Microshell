@@ -11,7 +11,7 @@ add_executable(Microshell ${src})
 project(MicroshellTests LANGUAGES CXX)
 
 set(src_tests
-  tests.cpp
+  UnitTests/tests.cpp
 )
 
 add_executable(MicroshellTests ${src_tests})
