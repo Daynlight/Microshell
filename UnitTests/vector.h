@@ -163,7 +163,7 @@ inline void Vector::vectorGet() {
   vector_init(&vec, sizeof(int));
 
   for(int i = 0; i < 20; i++)
-    vector_emplace_back(&vec, (char*)&i);
+    vector_push(&vec, (char*)&i);
 
   
   for(int i = 0; i < 20; i++){
@@ -186,7 +186,7 @@ inline void Vector::vectorSet() {
   vector_init(&vec, sizeof(int));
 
   for(int i = 0; i < 20; i++)
-    vector_emplace_back(&vec, (char*)&i);
+    vector_push(&vec, (char*)&i);
 
   for(int i = 0; i < 20; i++){
     int a = 20 - i;
@@ -216,7 +216,7 @@ inline void Vector::vectorEmplaceBack() {
   int b[20] = {0};
 
   for(int i = 0; i < 20; i++)
-    vector_emplace_back(&vec, (char*)&a[i]);
+    vector_push(&vec, (char*)&a[i]);
   
   for(int i = 0; i < 20; i++)
     vector_get(&vec, (char*)&b[i], i);
