@@ -236,19 +236,33 @@ struct string{
 };
 
 void string_init(struct string* string, char* initial_data){
-
+  vector_init(&string->data, sizeof(char));
+  unsigned int initial_data_size = strlen(initial_data);
+  vector_reserve(&string->data, initial_data_size);
+  for(int i = 0; i < initial_data_size; i++)
+    vector_emplace_back(&string->data, &initial_data[i]);
 };
 
 void string_destroy(struct string* string){
-
+  vector_destroy(&string->data);
 };
 
-void string_concat(struct string* string){
-
+char string_at(struct string* string, unsigned int index){
+  char at = 0;
+  vector_get(&string->data, &at, index);
+  return at;
 };
 
-void string_at(struct string* string, unsigned int index){
+void string_concat(struct string* string, struct string* string2){
+  unsigned int previous_size = string->data.size;
+  unsigned int additional_size = string2->data.size;
+  
+  vector_reserve(&string->data, additional_size);
 
+  for(unsigned int i = 0; i < additional_size; i++){
+    char at = string_at(string2, i);
+    vector_emplace_back(&string->data, &at);
+  };
 };
 
 void string_find(struct string* string, char el){
