@@ -1,3 +1,4 @@
+#include "UnitTests/Assert.h"
 #include "UnitTests/assert.h"
 #include "UnitTests/vector.h"
 #include "UnitTests/string.h"
@@ -7,7 +8,11 @@
 
 
 int main(){
+  Tests::Assert assert;
+  Structures::UnitTests::Unordered_map unordered_map;
+  
   vector_run_all_tests();
+  unordered_map.runAll();
 
   printf(COLOR("==== All Tests ====\n", "32"));
   if(all_passed == all_total)

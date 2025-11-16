@@ -164,6 +164,7 @@ void vector_reserve(struct vector* vector, unsigned int cap){
 
 void vector_destroy(struct vector* vector){
   free(vector->data);
+  vector->data = NULL;
 };
 
 void vector_resize(struct vector* vector) {
