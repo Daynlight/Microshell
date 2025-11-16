@@ -151,17 +151,6 @@ void vector_init(struct vector* vector, unsigned int size_of_el){
   vector->size = 0;
 };
 
-void vector_reserve(struct vector* vector, unsigned int cap){
-  unsigned int new_cap = vector->cap + cap; 
-  char* temp = (char*)calloc(new_cap, vector->size_of_el);
-  
-  memcpy(temp, vector->data, vector->size * vector->size_of_el);
-  free(vector->data);
-
-  vector->data = temp;
-  vector->cap = new_cap;
-};
-
 void vector_destroy(struct vector* vector){
   free(vector->data);
   vector->data = NULL;
@@ -178,22 +167,23 @@ void vector_resize(struct vector* vector) {
   vector->cap = new_cap;
 };
 
-void vector_push(struct vector* vector, char* data){
+void vector_reserve(struct vector *vector, unsigned int cap){
+  unsigned int new_cap = vector->cap + cap; 
+  char* temp = (char*)calloc(new_cap, vector->size_of_el);
+  
+  memcpy(temp, vector->data, vector->size * vector->size_of_el);
+  free(vector->data);
+
+  vector->data = temp;
+  vector->cap = new_cap;
+};
+
+void vector_emplace_back(struct vector *vector, char *data){
   if(vector->size >= vector->cap)
     vector_resize(vector);
   
   memcpy(vector->data + vector->size * vector->size_of_el, data, vector->size_of_el);
   vector->size++;
-};
-
-void vector_pop(struct vector* vector, char* out){
-  if (vector->size == 0) {
-    fprintf(stderr, "Error: cannot pop from empty vector\n");
-    return;
-  };
-
-  vector->size--;
-  memcpy(out, vector->data + vector->size * vector->size_of_el, vector->size_of_el);
 };
 
 void vector_get(struct vector* vector, char* out, unsigned int index){
@@ -206,6 +196,11 @@ void vector_get(struct vector* vector, char* out, unsigned int index){
   memcpy(out, vector->data + offset, vector->size_of_el);
 };
 
+void vector_pop(struct vector* vector, char* out){
+  vector_get(vector, out, vector->size - 1);
+  vector->size--;
+};
+
 void vector_set(struct vector* vector, char* data, unsigned int index){
   if(index >= vector->size) {
     fprintf(stderr, "vector_set error: index %u out of range (size=%u)\n",
@@ -215,6 +210,14 @@ void vector_set(struct vector* vector, char* data, unsigned int index){
   unsigned int offset = index * vector->size_of_el;
   memcpy(vector->data + offset, data, vector->size_of_el);
 };
+
+void vector_alloc(struct vector *vector, unsigned int size, char *data){
+  unsigned int missing_space = 2 * vector->size + size - vector->cap;
+  vector_reserve(vector, missing_space);
+  for(int i = 0; i < size; i++)
+    vector_emplace_back(vector, data);
+};
+
 
 
 //////////////////////////
@@ -339,8 +342,8 @@ void unordered_map_set(struct unordered_map* unordered_map, char* data, const ch
     struct bucket_record record;
     record.index = unordered_map->data.size;
     memcpy(record.key, key, KEYSIZE);
-    vector_push(&unordered_map->buckets[bucket_id], (char*)&record);
-    vector_push(&unordered_map->data, data);
+    vector_emplace_back(&unordered_map->buckets[bucket_id], (char*)&record);
+    vector_emplace_back(&unordered_map->data, data);
   }
   else{                                                     // found
     vector_set(&unordered_map->data, data, index);
@@ -434,13 +437,13 @@ void pathToVector(char* current_path){
         }
       }
       else{
-        vector_push(&path_vector, folder);
+        vector_emplace_back(&path_vector, folder);
       }
       memset(folder, 0, MAXDIRSIZE);
     };
   };
   
-  vector_push(&path_vector, folder);
+  vector_emplace_back(&path_vector, folder);
 };
 
 void pathToString(){
