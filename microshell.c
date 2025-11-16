@@ -52,26 +52,11 @@
 // We want a fast way to find the value from a kay.
 // An unordered_map gives O(1) average lookup time,
 // so it is fast to finding values from keys.
-
-//// How it works: ////
-// In our implementation we keep the actual data in a main vector.
-//
-// To avoid searching through the whole vector,
-// we use a hash table made of buckets.
-// A bucket is a small vector that stores:
-//   - the key (command name)
-//   - the index pointing to the real data
-//
-// When we insert or search:
-//   * We compute the hash of the key
-//   * We take (hash % BUCKETS) to choose the bucket
-//    * We only search inside that one bucket
-//    * We add value to that one bucket with index
-//
-// A good hash function spreads keys evenly,
-// so buckets stay small and lookups are fast.
-// More buckets means fewer collisions,
-// at the cost of more memory.
+//// Functions: ////
+// * init
+// * destroy
+// * get
+// * set
 
 
 //////////////////////////
