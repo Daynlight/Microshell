@@ -110,7 +110,6 @@
 
 //// MVP ////
 // [x] Workflow for every system (Cross-Platform update)
-// [ ] Windows integration (Cross-Platform update)
 // [ ] Architecture Overview logic part
 // [ ] Input Handler
 // [ ] Input Controller
@@ -147,6 +146,7 @@
 // [ ] arrows for history/autocomplete
 // [ ] ^ two more commands
 // [ ] cp
+// [ ] Windows integration (Cross-Platform update)
 
 
 
