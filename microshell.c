@@ -200,22 +200,6 @@ extern "C" {
 #define KEYSIZE 32
 #define BUCKETS 10
 
-// Colors
-// 30 - Black
-// 31 - Red
-// 32 - Green
-// 33 - Yellow
-// 34 - Blue
-// 35 - Magenta
-// 36 - Cyan
-// 37 - White
-#ifndef __cplusplus
-  #define COLOR(x, c) "\033[0;"c"m"x"\033[0;37m"
-#else
-  #define COLOR(x, c) x
-#endif
-
-
 
 
 
@@ -547,12 +531,37 @@ char* username_string;
 
 
 
+
+/////////////////////////////////////////////////
+///////////////////// UI COLOR //////////////////
+/////////////////////////////////////////////////
+enum COLORS{
+  BLACK = 30,
+  RED = 31,
+  Green = 32,
+  Yellow = 33,
+  Blue = 34,
+  Magenta = 35,
+  Cyan = 36,
+  White = 37
+};
+
+const char* COLOR(const char* str, enum COLORS color){
+  const unsigned int length = strlen(str) + 2 + 8 + 10;
+  char *colored = (char*)calloc(length, sizeof(char));
+  sprintf(colored, "\033[0;%dm%s\033[0;37m", color, str);   // [BUG] mem lose
+  return colored;
+};
+
+
+
+
 /////////////////////////////////////////////////////////
 /////////////////////// Functions ///////////////////////
 /////////////////////////////////////////////////////////
 void microshellExit(){
   running = 0;
-  printf(COLOR("Microshell Exit!!\n", "31"));
+  printf(COLOR("Microshell Exit!!\n", RED));
   fflush(stdout);
 }
 
@@ -562,27 +571,26 @@ void microshellExit(){
 //// print ////
 ///////////////
 void printInfo(){
-  printf(COLOR("Info:\n", "33"));
-  printf(COLOR("VERSION: " VERSION "\n", "32")
-         COLOR("Author: " AUTHOR "\n", "32")
-        );
+  printf(COLOR("Info:\n", Green));
+  printf(COLOR("VERSION: " VERSION "\n", RED));
+  printf(COLOR("Author: " AUTHOR "\n", RED));
 
   fflush(stdout); 
 };
 
 void printFeatures(){
-  printf(COLOR("Features:\n", "33"));
+  printf(COLOR("Features:\n", Green));
   printf(COLOR("* Text Coloring\n"
                "* Current Path\n"
-               "* User Name\n", "32"));
+               "* User Name\n", RED));
 
   fflush(stdout); 
 };
 
 void printCommands(){
-  printf(COLOR("Commands:\n", "33"));
+  printf(COLOR("Commands:\n", Green));
   printf(COLOR("* help - show command list and info\n"
-               "* exit - exit from microshell\n", "32"));
+               "* exit - exit from microshell\n", RED));
 
   fflush(stdout); 
 };
