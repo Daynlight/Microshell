@@ -549,7 +549,7 @@ enum COLORS{
 const char* COLOR(const char* str, enum COLORS color){
   const unsigned int length = strlen(str) + 2 + 8 + 10;
   char *colored = (char*)calloc(length, sizeof(char));
-  sprintf(colored, "\033[0;%dm%s\033[0;37m", color, str);   // [BUG] mem lose
+  sprintf(colored, "\033[0;%dm%s\033[0;37m", color, str);   // [BUG] mem loss
   return colored;
 };
 
