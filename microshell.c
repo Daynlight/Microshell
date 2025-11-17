@@ -114,11 +114,12 @@
 // [ ] Input Handler
 // [ ] Input Controller
 // [ ] Command Composer
+// [ ] Command Parser
 // [ ] Command Runner
 // [ ] Task Queue
 // [ ] Task Controller
 // [ ] Env Register
-// [ ] UI Colorer 
+// [x] UI Colorer 
 // [ ] UI Composer
 // [ ] Ui Printer
 // [ ] ```Ctrl + Z``` process exit or program
@@ -405,7 +406,7 @@ unsigned int unordered_map_hash_fun(const char* key){
   }
   
   return hash;
-}
+};
 
 void unordered_map_init(struct unordered_map* unordered_map, unsigned int size_of_el){
   vector_init(&unordered_map->data, size_of_el);
@@ -531,7 +532,9 @@ char* username_string;
 
 
 
-
+///////////////////////////////////////////////////////////
+///////////////////////////// UI //////////////////////////
+///////////////////////////////////////////////////////////
 /////////////////////////////////////////////////
 ///////////////////// UI COLOR //////////////////
 /////////////////////////////////////////////////
@@ -552,6 +555,9 @@ const char* COLOR(const char* str, enum COLORS color){
   sprintf(colored, "\033[0;%dm%s\033[0;37m", color, str);   // [BUG] mem loss
   return colored;
 };
+
+
+
 
 
 
