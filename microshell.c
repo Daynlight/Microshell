@@ -337,6 +337,10 @@ char string_at(struct string* string, unsigned int index){
   return at;
 };
 
+void string_set(struct string* string, char data, unsigned int index){
+  vector_set(&string->data, &data, index);
+};
+
 void string_concat(struct string* string, struct string* string2){
   unsigned int previous_size = string->data.size;
   unsigned int additional_size = string2->data.size;
@@ -675,26 +679,6 @@ void getCurrentPath(){
 //////////////////
 //// Commands ////
 //////////////////
-void commandCd(char* command){
-  char path[MAXDIRSIZE * MAXDEPTH] = {0};
-  strncpy(path, command + 3, MAXDIRSIZE * MAXDEPTH);
-  printf("%s\n", path);
-  path[strlen(path) - 1] = '/';
-
-  pathToVector(path);
-
-  // if(path_vector.size > 0 && strcmp(path, "..") == 0){
-  //     char temp[MAXDIRSIZE];
-  //     vector_pop(&path_vector, temp);
-  //   };
-
-  // if(chdir(path) != 0){
-  //   printf(COLOR("Error: No such file or directory\n", "31"));
-  //   fflush(stdout);
-  // };
-
-  pathToString();
-};
 
 void commandParser(char* command){
   if(strncmp(command, "exit", 4) == 0){
@@ -705,9 +689,6 @@ void commandParser(char* command){
     printInfo();
     printFeatures();
     printCommands();  
-  }
-  else if(strncmp(command, "cd", 2) == 0){
-    commandCd(command);
   }
   else{
 
@@ -747,11 +728,15 @@ int main(){
   printFeatures();
 
   while (running) {
-    char command[COMMANDSIZE] = {0};
+    struct string command;
+    string_init(&command, "");
     printf("[%s](%s) $ ", path_string, username_string);
-    fgets(command, COMMANDSIZE, stdin);
+    
+    
+    fgets(string_get_ptr(&command), COMMANDSIZE, stdin);
 
-    commandParser(command);
+    commandParser(string_get_ptr(&command));
+    string_destroy(&command);
   };
   
   microshellExit();
