@@ -2,6 +2,8 @@
 
 ## Architecture Overview
 
+### Diagram
+![Diagram](docs/Arch.png)
 
 ### Structures
 - [ ] vector *
