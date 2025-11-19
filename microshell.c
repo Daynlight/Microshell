@@ -48,6 +48,7 @@
 // * at
 // * find
 // * erase
+// * set
 // * get_ptr
 
 

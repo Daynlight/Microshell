@@ -16,6 +16,7 @@ public:
   void stringAt();
   void stringFind();
   void stringErase();
+  void stringSet();
   void stringGetPtr();
 };
 
@@ -36,6 +37,7 @@ inline bool String::runAll(){
   stringDestroy();
   stringConcat();
   stringAt();
+  stringSet();
   stringFind();
   stringErase();
   stringGetPtr();
@@ -155,6 +157,29 @@ inline void String::stringErase() {
     char at = string_at(&string, i);
     assert.equal("String::stringErase iteration", at, correct[i]);
   };
+
+  string_destroy(&string);
+};
+
+
+
+
+
+
+inline void String::stringSet() {
+  struct string string;
+  char initial[] = "Hello World";
+  char correct[] = "Hbllo World";
+
+
+  string_init(&string, initial);
+
+  string_set(&string, 'b', 1);
+
+  char* ptr = string_get_ptr(&string);
+
+  for(int i = 0; i < string.data.size; i++)
+    assert.equal("String::stringGetPtr iteration", ptr[i], correct[i]);
 
   string_destroy(&string);
 };
