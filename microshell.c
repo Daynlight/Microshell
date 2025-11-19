@@ -2,7 +2,6 @@
 ///////////////////////// Architecture Overview /////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-
 ///////////////////////////////////////////////////////////////
 ///////////////////////// Structures //////////////////////////
 ///////////////////////////////////////////////////////////////
@@ -48,6 +47,7 @@
 // * at
 // * find
 // * erase
+// * set
 // * get_ptr
 
 
@@ -101,7 +101,7 @@
 //////////////////////////// TODO /////////////////////////////
 ///////////////////////////////////////////////////////////////
 //// Structures ////
-// [ ] Use String
+// [x] Use String
 // [ ] Path Struct
 // [ ] Dequeue Struct
 // [ ] Stack Struct
@@ -109,16 +109,17 @@
 // [ ] Update program to use new structures
 
 //// MVP ////
-// [ ] Workflow for every system (Cross-Platform update)
+// [x] Workflow for every system (Cross-Platform update)
 // [ ] Architecture Overview logic part
 // [ ] Input Handler
 // [ ] Input Controller
 // [ ] Command Composer
+// [ ] Command Parser
 // [ ] Command Runner
 // [ ] Task Queue
 // [ ] Task Controller
 // [ ] Env Register
-// [ ] UI Colorer 
+// [x] UI Colorer 
 // [ ] UI Composer
 // [ ] Ui Printer
 // [ ] ```Ctrl + Z``` process exit or program
@@ -146,6 +147,7 @@
 // [ ] arrows for history/autocomplete
 // [ ] ^ two more commands
 // [ ] cp
+// [ ] Windows integration (Cross-Platform update)
 
 
 
@@ -198,22 +200,6 @@ extern "C" {
 
 #define KEYSIZE 32
 #define BUCKETS 10
-
-// Colors
-// 30 - Black
-// 31 - Red
-// 32 - Green
-// 33 - Yellow
-// 34 - Blue
-// 35 - Magenta
-// 36 - Cyan
-// 37 - White
-#ifndef __cplusplus
-  #define COLOR(x, c) "\033[0;"c"m"x"\033[0;37m"
-#else
-  #define COLOR(x, c) x
-#endif
-
 
 
 
@@ -351,6 +337,10 @@ char string_at(struct string* string, unsigned int index){
   return at;
 };
 
+void string_set(struct string* string, char data, unsigned int index){
+  vector_set(&string->data, &data, index);
+};
+
 void string_concat(struct string* string, struct string* string2){
   unsigned int previous_size = string->data.size;
   unsigned int additional_size = string2->data.size;
@@ -420,7 +410,7 @@ unsigned int unordered_map_hash_fun(const char* key){
   }
   
   return hash;
-}
+};
 
 void unordered_map_init(struct unordered_map* unordered_map, unsigned int size_of_el){
   vector_init(&unordered_map->data, size_of_el);
@@ -540,9 +530,38 @@ void unordered_map_set(struct unordered_map* unordered_map, char* data, const ch
 //////////////////////// Globals ////////////////////////
 /////////////////////////////////////////////////////////
 char running = 1;
-struct vector path_vector;
-char path_string[MAXDEPTH * MAXDIRSIZE] = {0};
-char* username_string;
+struct string path;
+struct string username;
+
+
+
+///////////////////////////////////////////////////////////
+///////////////////////////// UI //////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////////////////////////////////
+///////////////////// UI COLOR //////////////////
+/////////////////////////////////////////////////
+enum COLORS{
+  BLACK = 30,
+  RED = 31,
+  Green = 32,
+  Yellow = 33,
+  Blue = 34,
+  Magenta = 35,
+  Cyan = 36,
+  White = 37
+};
+
+const char* COLOR(const char* str, enum COLORS color){
+  const unsigned int length = strlen(str) + 2 + 8 + 10;
+  char *colored = (char*)calloc(length, sizeof(char));
+  sprintf(colored, "\033[0;%dm%s\033[0;37m", color, str);   // [BUG] mem loss
+  return colored;
+};
+
+
+
+
 
 
 
@@ -551,7 +570,9 @@ char* username_string;
 /////////////////////////////////////////////////////////
 void microshellExit(){
   running = 0;
-  printf(COLOR("Microshell Exit!!\n", "31"));
+  string_destroy(&path);
+  string_destroy(&username);
+  printf(COLOR("Microshell Exit!!\n", RED));
   fflush(stdout);
 }
 
@@ -561,27 +582,26 @@ void microshellExit(){
 //// print ////
 ///////////////
 void printInfo(){
-  printf(COLOR("Info:\n", "33"));
-  printf(COLOR("VERSION: " VERSION "\n", "32")
-         COLOR("Author: " AUTHOR "\n", "32")
-        );
+  printf(COLOR("Info:\n", Green));
+  printf(COLOR("VERSION: " VERSION "\n", RED));
+  printf(COLOR("Author: " AUTHOR "\n", RED));
 
   fflush(stdout); 
 };
 
 void printFeatures(){
-  printf(COLOR("Features:\n", "33"));
+  printf(COLOR("Features:\n", Green));
   printf(COLOR("* Text Coloring\n"
                "* Current Path\n"
-               "* User Name\n", "32"));
+               "* User Name\n", RED));
 
   fflush(stdout); 
 };
 
 void printCommands(){
-  printf(COLOR("Commands:\n", "33"));
+  printf(COLOR("Commands:\n", Green));
   printf(COLOR("* help - show command list and info\n"
-               "* exit - exit from microshell\n", "32"));
+               "* exit - exit from microshell\n", RED));
 
   fflush(stdout); 
 };
@@ -592,7 +612,9 @@ void printCommands(){
 //// UserName ////
 /////////////////
 void getUserName(){
-  username_string = getlogin();
+  char* username_temp = getlogin();
+  string_destroy(&username);
+  string_init(&username, username_temp);
 };
 
 
@@ -600,59 +622,13 @@ void getUserName(){
 //////////////
 //// Path ////
 //////////////
-void pathToVector(char* current_path){
-  unsigned int current_path_size = strlen(current_path);
-  char folder[MAXDIRSIZE] = {0};
-
-  for(int i = 0; i < current_path_size; i++){
-    if(current_path[i] != '/'){
-      char ch[2] = {0};
-      ch[0] = current_path[i];
-      strcat(folder, &ch[0]);
-    }
-    else{
-      if(strncmp(folder, "..", 2) == 0){
-        if(path_vector.size >= 1){
-          char temp[MAXDIRSIZE];
-          vector_pop(&path_vector, temp);
-        }
-      }
-      else{
-        vector_push(&path_vector, folder);
-      }
-      memset(folder, 0, MAXDIRSIZE);
-    };
-  };
-  
-  vector_push(&path_vector, folder);
-};
-
-void pathToString(){
-  memset(path_string, 0 , MAXDIRSIZE * MAXDEPTH);
-
-  for(int i = 0; i < path_vector.size; i++){
-    strcat(path_string, "/");
-
-    char directory[MAXDIRSIZE] = {0};
-    vector_get(&path_vector, directory, i);
-    strcat(path_string, directory);
-  };
-
-  if(path_vector.size <= 0)
-    strcat(path_string, "/");
-
-  path_string[strlen(path_string)] = '\0';
-};
-
 void getCurrentPath(){
-  vector_destroy(&path_vector);
-  vector_init(&path_vector, MAXDIRSIZE);
-  
-  char current_path[MAXDIRSIZE * MAXDEPTH] = "";
-  getcwd(current_path, MAXDIRSIZE * MAXDEPTH);
+  string_destroy(&path);
+  string_init(&path, "");
+  char* data = "\0";
+  vector_alloc(&path.data, MAXDIRSIZE * MAXDEPTH, data);
 
-  pathToVector(current_path);
-  pathToString();
+  getcwd(string_get_ptr(&path), MAXDIRSIZE * MAXDEPTH);
 };
 
 
@@ -660,26 +636,6 @@ void getCurrentPath(){
 //////////////////
 //// Commands ////
 //////////////////
-void commandCd(char* command){
-  char path[MAXDIRSIZE * MAXDEPTH] = {0};
-  strncpy(path, command + 3, MAXDIRSIZE * MAXDEPTH);
-  printf("%s\n", path);
-  path[strlen(path) - 1] = '/';
-
-  pathToVector(path);
-
-  // if(path_vector.size > 0 && strcmp(path, "..") == 0){
-  //     char temp[MAXDIRSIZE];
-  //     vector_pop(&path_vector, temp);
-  //   };
-
-  // if(chdir(path) != 0){
-  //   printf(COLOR("Error: No such file or directory\n", "31"));
-  //   fflush(stdout);
-  // };
-
-  pathToString();
-};
 
 void commandParser(char* command){
   if(strncmp(command, "exit", 4) == 0){
@@ -690,9 +646,6 @@ void commandParser(char* command){
     printInfo();
     printFeatures();
     printCommands();  
-  }
-  else if(strncmp(command, "cd", 2) == 0){
-    commandCd(command);
   }
   else{
 
@@ -726,17 +679,26 @@ void sigint_handler(int sig){
 int main(){
   signal(SIGINT, sigint_handler);
 
+  string_init(&path, "");
+  string_init(&username, "");
+
   getUserName();
   getCurrentPath();
+
   printInfo();
   printFeatures();
 
   while (running) {
-    char command[COMMANDSIZE] = {0};
-    printf("[%s](%s) $ ", path_string, username_string);
-    fgets(command, COMMANDSIZE, stdin);
+    struct string command;
+    string_init(&command, "");    // [NOTE] suboptimal
+    printf("[%s](%s) $ ", string_get_ptr(&path), string_get_ptr(&username));
+    
+    
+    fgets(string_get_ptr(&command), COMMANDSIZE, stdin);
 
-    commandParser(command);
+    
+    commandParser(string_get_ptr(&command));
+    string_destroy(&command);
   };
   
   microshellExit();
