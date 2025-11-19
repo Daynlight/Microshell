@@ -690,7 +690,7 @@ int main(){
 
   while (running) {
     struct string command;
-    string_init(&command, "");
+    string_init(&command, "");    // [NOTE] suboptimal
     printf("[%s](%s) $ ", string_get_ptr(&path), string_get_ptr(&username));
     
     
