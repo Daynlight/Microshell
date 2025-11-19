@@ -102,7 +102,7 @@
 //////////////////////////// TODO /////////////////////////////
 ///////////////////////////////////////////////////////////////
 //// Structures ////
-// [ ] Use String
+// [x] Use String
 // [ ] Path Struct
 // [ ] Dequeue Struct
 // [ ] Stack Struct
@@ -531,9 +531,8 @@ void unordered_map_set(struct unordered_map* unordered_map, char* data, const ch
 //////////////////////// Globals ////////////////////////
 /////////////////////////////////////////////////////////
 char running = 1;
-struct vector path_vector;
-char path_string[MAXDEPTH * MAXDIRSIZE] = {0};
-char* username_string;
+struct string path;
+struct string username;
 
 
 
@@ -572,6 +571,8 @@ const char* COLOR(const char* str, enum COLORS color){
 /////////////////////////////////////////////////////////
 void microshellExit(){
   running = 0;
+  string_destroy(&path);
+  string_destroy(&username);
   printf(COLOR("Microshell Exit!!\n", RED));
   fflush(stdout);
 }
@@ -612,7 +613,9 @@ void printCommands(){
 //// UserName ////
 /////////////////
 void getUserName(){
-  username_string = getlogin();
+  char* username_temp = getlogin();
+  string_destroy(&username);
+  string_init(&username, username_temp);
 };
 
 
@@ -620,59 +623,13 @@ void getUserName(){
 //////////////
 //// Path ////
 //////////////
-void pathToVector(char* current_path){
-  unsigned int current_path_size = strlen(current_path);
-  char folder[MAXDIRSIZE] = {0};
-
-  for(int i = 0; i < current_path_size; i++){
-    if(current_path[i] != '/'){
-      char ch[2] = {0};
-      ch[0] = current_path[i];
-      strcat(folder, &ch[0]);
-    }
-    else{
-      if(strncmp(folder, "..", 2) == 0){
-        if(path_vector.size >= 1){
-          char temp[MAXDIRSIZE];
-          vector_pop(&path_vector, temp);
-        }
-      }
-      else{
-        vector_push(&path_vector, folder);
-      }
-      memset(folder, 0, MAXDIRSIZE);
-    };
-  };
-  
-  vector_push(&path_vector, folder);
-};
-
-void pathToString(){
-  memset(path_string, 0 , MAXDIRSIZE * MAXDEPTH);
-
-  for(int i = 0; i < path_vector.size; i++){
-    strcat(path_string, "/");
-
-    char directory[MAXDIRSIZE] = {0};
-    vector_get(&path_vector, directory, i);
-    strcat(path_string, directory);
-  };
-
-  if(path_vector.size <= 0)
-    strcat(path_string, "/");
-
-  path_string[strlen(path_string)] = '\0';
-};
-
 void getCurrentPath(){
-  vector_destroy(&path_vector);
-  vector_init(&path_vector, MAXDIRSIZE);
-  
-  char current_path[MAXDIRSIZE * MAXDEPTH] = "";
-  getcwd(current_path, MAXDIRSIZE * MAXDEPTH);
+  string_destroy(&path);
+  string_init(&path, "");
+  char* data = "\0";
+  vector_alloc(&path.data, MAXDIRSIZE * MAXDEPTH, data);
 
-  pathToVector(current_path);
-  pathToString();
+  getcwd(string_get_ptr(&path), MAXDIRSIZE * MAXDEPTH);
 };
 
 
@@ -723,19 +680,24 @@ void sigint_handler(int sig){
 int main(){
   signal(SIGINT, sigint_handler);
 
+  string_init(&path, "");
+  string_init(&username, "");
+
   getUserName();
   getCurrentPath();
+
   printInfo();
   printFeatures();
 
   while (running) {
     struct string command;
     string_init(&command, "");
-    printf("[%s](%s) $ ", path_string, username_string);
+    printf("[%s](%s) $ ", string_get_ptr(&path), string_get_ptr(&username));
     
     
     fgets(string_get_ptr(&command), COMMANDSIZE, stdin);
 
+    
     commandParser(string_get_ptr(&command));
     string_destroy(&command);
   };
