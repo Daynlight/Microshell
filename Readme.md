@@ -3,7 +3,7 @@
 ## Architecture Overview
 
 ### Diagram
-![Diagram](docs/Arch.png)
+![Diagram](docs/Arch.svg)
 
 ### Structures
 - [ ] vector *
