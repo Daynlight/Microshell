@@ -1,121 +1,239 @@
 # Microshell
-
-## Architecture Overview
-
-### Diagram
-![Diagram](docs/Arch.png)
-
-### Structures
-- [ ] vector *
-- [ ] string *
-- [ ] path
-- [ ] prefix array
-- [ ] unordered_map *
-- [ ] deque
-- [ ] stack
-
-#### vector
-##### IDEA
-Vector is dynamic array that allows storing dynamic data that can change with time We want it for unordered_map and string.
-##### Functions:
-- init
-- destroy
-- reserve
-- resize
-- shrink ^
-- fit    ^
-- push
-- pop
-- erase
-- clean  ^
-- get
-- set
-- alloc
-
-
-#### string 
-##### IDEA 
-Dynamic string with no size limitation We don't know path size and we need strings to dynamicly operate on them without it we waste a lot of memory and can it cause mem overflow
-##### In this project:
-Used for saving dynamic size names and path.
-##### Functions:
-- init
-- destroy
-- concat
-- at
-- find
-- erase
-- set
-- get_ptr
-
-
-#### unordered_map
-##### IDEA We want a fast way to find the value from a kay. An unordered_map gives O(1) average lookup time, so it is fast to finding values from keys.
-##### Functions:
-- init
-- destroy
-- get
-- set
-
-
-#### prefix array
-##### IDEA
-##### Functions:
-
-
-#### deque
-##### IDEA
-##### Functions:
-
-
-#### stack 
-##### IDEA
-##### Functions:
-
-
-#### path
-##### IDEA 
-Dynamic array of strings that contains folders and provide  whole path
-##### Functions:
+## About
+This is small shell build on threads optimized for parallel operations
 
 
 
 
-## TODO
-### Structures
-- [x] Use String
-- [ ] Path Struct
-- [ ] Dequeue Struct
-- [ ] Stack Struct
-- [ ] Prefix Array Struct
-- [ ] Update program to use new structures
+## Diagram
+![Diagram](docs/Architecture.svg)
 
-### MVP
-- [x] Workflow for every system (Cross-Platform update)
-- [ ] Architecture Overview logic part
-- [ ] Input Handler
-- [ ] Input Controller
-- [ ] Command Composer
-- [ ] Command Parser
-- [ ] Command Runner
-- [ ] Task Queue
-- [ ] Task Controller
-- [ ] Env Register
-- [x] UI Colorer 
-- [ ] UI Composer
-- [ ] Ui Printer
-- [ ] ```Ctrl + Z``` process exit or program
 
-### Requirements
-- [x] User name
-- [x] ^ encouragement sign {path} $
+
+
+
+## Components
+### Error Codes
+##### Responsibility
+  * storing error codes for pipeline errors checking.
+
+
+
+### Log System (SINGLETON)
+##### Responsibility
+  * Used for logging
+  * Used for testability
+##### Functions
+  * output
+  * info
+  * warning
+  * error
+
+
+
+### Microshell Initialize
+##### Responsibility
+  * Start program
+  * Run Threads (Input, Processing, Output, Memory Updater)
+##### Functions
+##### Error Handling
+
+
+
+### Microshell Destroy
+
+
+
+### Shared Memory
+#### Processing Priority Queue
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Processing Diff Buffer
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Command Diff Buffer
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Env Var
+##### Responsibility
+##### Functions
+##### Error Handling
+
+
+
+### Helpers
+#### History
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Backup System
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Prefix Array
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Memory Updater
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Update Files
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Data I/O
+##### Responsibility
+##### Functions
+##### Error Handling
+
+
+
+### Input Layer
+#### Get Input
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Input Action (Strategy)
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Check Command Correctness
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Add to Processing Queue
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Predict Command
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Prefix Controller
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### History Controller
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Auto Complete
+##### Responsibility
+##### Functions
+##### Error Handling
+
+
+
+### Processing Layer
+#### Command Thread Controller
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Parse Command
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Run Process
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Result Controller
+##### Responsibility
+##### Functions
+##### Error Handling
+
+
+
+### Process Thread
+#### Process Start
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Process Run
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Check Result
+##### Responsibility
+##### Functions
+##### Error Handling
+
+
+
+### Own Commands
+#### cd
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### exit
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### help
+##### Responsibility
+##### Functions
+##### Error Handling
+
+
+
+### Output Layer
+#### Get output
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Move Cursor
+##### Responsibility
+##### Functions
+##### Error Handling
+
+#### Print in Terminal
+##### Responsibility
+##### Functions
+##### Error Handling
+
+
+
+
+## Requirements
+- [ ] User name
+- [ ] ^ encouragement sign {path} $
 - [ ] ^ cd
-- [x] ^ exit
+- [ ] ^ exit
 - [ ] ^ execute form PATH: ```fork + exec*()```
 - [ ] ^ Error Comuniact: When can't parsee command
-- [x] ^ help: Info + Features + Commands
+- [ ] ^ help: Info + Features + Commands
 
-### Features
+
+
+
+## Features
 - [ ] Data I/O
 - [ ] History Controller
 - [ ] Prefix Controller
