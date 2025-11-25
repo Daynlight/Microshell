@@ -8,6 +8,11 @@ set(src
 
 add_executable(Microshell ${src})
 
+
+
+
+
+
 project(MicroshellTests LANGUAGES CXX)
 
 set(src_tests
