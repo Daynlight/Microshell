@@ -172,6 +172,8 @@ int string_find(const struct string* string, const char* el){
 
 
 void string_erase(struct string* string, const int x, const int y){
+  if(!string && string->data.size <= 0)
+    return;
   int p_x = (x % string->data.size + string->data.size) % string->data.size;
   int p_y = (y % string->data.size + string->data.size) % string->data.size;
   
@@ -184,8 +186,7 @@ void string_erase(struct string* string, const int x, const int y){
   }
   else{
     memmove(string->data.data + p_x, string->data.data + p_y + 1, prev_size - p_y);
-    char terminator[] = "\0";
-    vector_set(&string->data, (char*)&terminator, prev_size - size);
+    vector_set(&string->data, (char*)&"\0", prev_size - size);
     string->data.size -= size;
   };
 };
