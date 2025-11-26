@@ -30,7 +30,7 @@ void vector_push(struct vector* vector, const char* data);
 void vector_pop(struct vector* vector, char* out);
 
 void vector_get(const struct vector* vector, char* out, const unsigned int index);
-void vector_set(struct vector* vector, char* data, unsigned int index);
+void vector_set(struct vector* vector, const char* data, unsigned int index);
 
 void vector_alloc(struct vector* vector, unsigned int size, char* data);
 void vector_copy(const struct vector* src, struct vector* dest);
@@ -137,7 +137,7 @@ void vector_get(const struct vector* vector, char* out, const unsigned int index
 
 
 
-void vector_set(struct vector* vector, char* data, unsigned int index){
+void vector_set(struct vector* vector, const char* data, unsigned int index){
   if(index >= vector->size) {
     fprintf(stderr, "vector_set error: index %u out of range (size=%u)\n",
             index, vector->size);

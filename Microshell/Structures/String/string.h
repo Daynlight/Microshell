@@ -20,15 +20,15 @@ void string_init_initial_string(struct string* string, const struct string* init
 
 void string_destroy(struct string* string);
 
-char string_get(const struct string* string, const unsigned int index);
+const char string_get(const struct string* string, const unsigned int index);
 void string_set(struct string* string, const char data, const unsigned int index);
 
 void string_concat(struct string* dest, const char* src);
 void string_concat_string(struct string* dest, const struct string* src);
-int string_find(const struct string* string, const char* el);
+const int string_find(const struct string* string, const char* el);
 void string_erase(struct string* string, const int x, const int y);
 
-char* string_get_ptr(const struct string* string);
+const char* string_get_ptr(const struct string* string);
 
 
 
@@ -62,7 +62,7 @@ void string_init_initial(struct string *string, const char *initial_data) {
 
 
 
-inline void string_init_initial_string(struct string *string, const struct string *initial_data) {
+void string_init_initial_string(struct string *string, const struct string *initial_data) {
   vector_copy(&initial_data->data, &string->data);
 };
 
@@ -80,7 +80,7 @@ void string_destroy(struct string* string){
 
 
 
-char string_get(const struct string* string, unsigned int index){
+const char string_get(const struct string* string, const unsigned int index){
   if(index >= string->data.size)
     return 0;
 
@@ -94,7 +94,7 @@ char string_get(const struct string* string, unsigned int index){
 
 
 
-void string_set(struct string* string, char data, unsigned int index){
+void string_set(struct string* string, const char data, const unsigned int index){
   if(index >= string->data.size)
     return;
 
@@ -106,7 +106,7 @@ void string_set(struct string* string, char data, unsigned int index){
 
 
 
-inline void string_concat(struct string *dest, const char *src){
+void string_concat(struct string *dest, const char *src){
   if(strlen(src) <= 0)
     return;
   
@@ -138,7 +138,12 @@ void string_concat_string(struct string *dest, const struct string *src) {
   };
 };
 
-int string_find(const struct string* string, const char* el){
+
+
+
+
+
+const int string_find(const struct string* string, const char* el){
   unsigned int i = 0;
 
   unsigned int el_size = strlen(el);
@@ -196,7 +201,7 @@ void string_erase(struct string* string, const int x, const int y){
 
 
 
-char* string_get_ptr(const struct string* string){
+const char* string_get_ptr(const struct string* string){
   return string->data.data;
 };
 
