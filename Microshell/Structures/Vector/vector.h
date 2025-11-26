@@ -20,19 +20,23 @@ struct vector{
   char* data;
 };
 
-void vector_init(struct vector* vector, unsigned int size_of_el);
+void vector_init(struct vector* vector, const unsigned int size_of_el);
 void vector_destroy(struct vector* vector);
 
 void vector_resize(struct vector* vector);
-void vector_reserve(struct vector* vector, unsigned int cap);
+void vector_reserve(struct vector* vector, const unsigned int additional_cap);
+void vector_shrink(struct vector* vector);
+void vector_alloc(struct vector* vector, const char* data, const unsigned int size);
+void vector_fit(struct vector* vector, const unsigned int size);
 
 void vector_push(struct vector* vector, const char* data);
 void vector_pop(struct vector* vector, char* out);
 
-void vector_get(const struct vector* vector, char* out, const unsigned int index);
-void vector_set(struct vector* vector, const char* data, unsigned int index);
+void vector_erase(struct vector* vector, const int x, const int y);
+void vector_clean(struct vector* vector);
 
-void vector_alloc(struct vector* vector, unsigned int size, char* data);
+void vector_get(const struct vector* vector, char* out, const unsigned int index);
+void vector_set(struct vector* vector, const char* data, const unsigned int index);
 void vector_copy(const struct vector* src, struct vector* dest);
 
 
@@ -47,11 +51,17 @@ void vector_copy(const struct vector* src, struct vector* dest);
 
 
 
-void vector_init(struct vector* vector, unsigned int size_of_el){
+void vector_init(struct vector* vector, const unsigned int size_of_el){
+  if(size_of_el <= 0)
+    return;
+
   vector->size_of_el = size_of_el;
-  vector->data = (char*)calloc(1, vector->size_of_el);
   vector->cap = 1;
   vector->size = 0;
+  vector->data = (char*)calloc(vector->cap, vector->size_of_el);
+
+  if(vector->data == NULL)
+    return;
 };
 
 
@@ -60,8 +70,10 @@ void vector_init(struct vector* vector, unsigned int size_of_el){
 
 
 void vector_destroy(struct vector* vector){
-  free(vector->data);
-  vector->data = NULL;
+  if(vector->data != NULL){
+    free(vector->data);
+    vector->data = NULL;
+  };
 };
 
 
@@ -70,14 +82,27 @@ void vector_destroy(struct vector* vector){
 
 
 void vector_resize(struct vector* vector) {
-  unsigned int new_cap = vector->cap * 2 + 1; 
+  if(vector->data == NULL)
+    return;
+
+  unsigned int new_cap = vector->cap * 2; 
+  
+  if(new_cap <= 0) 
+    new_cap = 1;
+  
   char* temp = (char*)calloc(new_cap, vector->size_of_el);
+
+  if(temp == NULL)
+    return;
   
   memcpy(temp, vector->data, vector->size * vector->size_of_el);
   free(vector->data);
-
+    
   vector->data = temp;
   vector->cap = new_cap;
+
+  if(vector->data == NULL)
+    return;
 };
 
 
@@ -85,16 +110,94 @@ void vector_resize(struct vector* vector) {
 
 
 
-void vector_reserve(struct vector *vector, unsigned int cap){
-  unsigned int new_cap = vector->cap + cap; 
+void vector_reserve(struct vector *vector, const unsigned int additional_cap){
+  if(vector->data == NULL)
+    return;
+
+  if(additional_cap <= 0)
+    return;
+
+  unsigned int new_cap = vector->cap + additional_cap; 
+  
   char* temp = (char*)calloc(new_cap, vector->size_of_el);
   
+  if(temp == NULL)
+    return;
+
   memcpy(temp, vector->data, vector->size * vector->size_of_el);
   free(vector->data);
 
   vector->data = temp;
   vector->cap = new_cap;
+  
+  if(vector->data == NULL)
+    return;
 };
+
+
+
+
+
+
+void vector_shrink(struct vector *vector){
+  if(vector->data == NULL)
+    return;
+
+  unsigned int new_cap = vector->size; 
+
+  if(new_cap <= 0)
+    new_cap = 1;
+
+  char* temp = (char*)calloc(new_cap, vector->size_of_el);
+  
+  if(temp == NULL)
+    return;
+
+  memcpy(temp, vector->data, vector->size * vector->size_of_el);
+  free(vector->data);
+
+  vector->data = temp;
+  vector->cap = new_cap;
+
+  if(vector->data == NULL)
+    return;
+};
+
+
+
+
+
+
+void vector_alloc(struct vector *vector, const char *data, const unsigned int size){
+  if(vector->data == NULL)
+    return;
+
+  if(size <= 0)
+    return;
+
+  unsigned int prev_size = vector->size; 
+  vector_fit(vector, size);
+  
+  for(int i = prev_size; i < vector->cap; i++)
+    vector_push(vector, data);
+};
+
+
+
+
+
+
+void vector_fit(struct vector *vector, const unsigned int size){
+  if(vector->data == NULL)
+    return;
+
+  if(size <= vector->size)
+    return;
+
+  unsigned int missing_space = 2 * vector->size + size - vector->cap;
+  vector_reserve(vector, missing_space);
+};
+
 
 
 
@@ -102,6 +205,9 @@ void vector_reserve(struct vector *vector, unsigned int cap){
 
 
 void vector_push(struct vector *vector, const char *data){
+  if(vector->data == NULL)
+    return;
+
   if(vector->size >= vector->cap)
     vector_resize(vector);
   
@@ -114,6 +220,12 @@ void vector_push(struct vector *vector, const char *data){
 
 
 void vector_pop(struct vector* vector, char* out){
+  if(vector->data == NULL)
+    return;
+
+  if(vector->size <= 0)
+    return;
+
   vector_get(vector, out, vector->size - 1);
   vector->size--;
 };
@@ -122,12 +234,55 @@ void vector_pop(struct vector* vector, char* out){
 
 
 
-void vector_get(const struct vector* vector, char* out, const unsigned int index){
-  if(index >= vector->size) {
-    fprintf(stderr, "vector_get error: index %u out of range (size=%u)\n",
-            index, vector->size);
+void vector_erase(struct vector *vector, const int x, const int y){
+  if(vector->data == NULL)
     return;
+
+  if(vector->size <= 0)
+    return;
+
+  int p_x = (x % vector->size + vector->size) % vector->size;
+  int p_y = (y % vector->size + vector->size) % vector->size;
+  
+  unsigned int size = p_y - p_x + 1;
+  unsigned int prev_size = vector->size;
+
+  if(p_x > p_y){
+    vector_erase(vector, p_x, vector->size - 1);
+    vector_erase(vector, 0, p_y);
+  }
+  else{
+    memmove(vector->data + p_x * vector->size_of_el, vector->data + (p_y + 1) * vector->size_of_el, (prev_size - p_y) * vector->size_of_el);
+    vector->size -= size;
   };
+
+};
+
+
+
+
+
+void vector_clean(struct vector *vector)
+{
+  if(vector->data == NULL)
+    return;
+
+  free(vector->data);
+  vector->data = (char*)calloc(vector->cap, vector->size_of_el);
+
+  vector->size = 0;
+
+  if(vector->data == NULL)
+    return;
+};
+
+void vector_get(const struct vector* vector, char* out, const unsigned int index){
+  if(vector->data == NULL)
+    return;
+
+  if(index >= vector->size)
+    return;
+
   unsigned int offset = index * vector->size_of_el;
   memcpy(out, vector->data + offset, vector->size_of_el);
 };
@@ -137,12 +292,13 @@ void vector_get(const struct vector* vector, char* out, const unsigned int index
 
 
 
-void vector_set(struct vector* vector, const char* data, unsigned int index){
-  if(index >= vector->size) {
-    fprintf(stderr, "vector_set error: index %u out of range (size=%u)\n",
-            index, vector->size);
+void vector_set(struct vector* vector, const char* data, const unsigned int index){
+  if(vector->data == NULL)
     return;
-  };
+
+  if(index >= vector->size)
+    return;
+
   unsigned int offset = index * vector->size_of_el;
   memcpy(vector->data + offset, data, vector->size_of_el);
 };
@@ -152,19 +308,11 @@ void vector_set(struct vector* vector, const char* data, unsigned int index){
 
 
 
-void vector_alloc(struct vector *vector, unsigned int size, char *data){
-  unsigned int missing_space = 2 * vector->size + size - vector->cap;
-  vector_reserve(vector, missing_space);
-  for(int i = 0; i < size; i++)
-    vector_push(vector, data);
-};
 
+void vector_copy(const struct vector *src, struct vector *dest) {
+  if(dest->data == NULL || src->data == NULL)
+    return;
 
-
-
-
-
-inline void vector_copy(const struct vector *src, struct vector *dest) {
   dest->size_of_el = src->size_of_el;
   dest->cap = src->cap;
   dest->size = src->size;
@@ -172,6 +320,9 @@ inline void vector_copy(const struct vector *src, struct vector *dest) {
   dest->data = (char*)calloc(dest->cap, dest->size_of_el);
 
   memcpy(dest->data, src->data, src->size * src->size_of_el);
+
+  if(dest->data == NULL)
+    return;
 };
 
 

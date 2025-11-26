@@ -70,7 +70,7 @@ inline void String::stringInit(){
   string_init(&string);
 
   
-  assert.equal("String::stringInit size", string.data.size, 0);
+  assert.equal("String::stringInit size", string.data.size, 1);
   assert.equal("String::stringInit size", string.data.cap, 1);
   assert.isNotNullptr("String::stringInit data", (const char*)&string.data);
   assert.equal("String::stringInit size", string.data.size_of_el, sizeof(char));
@@ -145,14 +145,27 @@ inline void String::stringConcat(){
   char initial[] = "Hello ";
   char initial2[] = "World";
   char complete[] = "Hello World";
+  char complete2[] = "Hello WorldWorld";
   
   string_init_initial(&string, initial);
   string_concat(&string, initial2);
 
   for(int i = 0; i < string.data.size; i++){
     char at = string_get(&string, i);
-    assert.equal("String::stringConcatString iteration", at, complete[i]);
+    assert.equal("String::stringConcat iteration", at, complete[i]);
   };
+
+  assert.equal("String::stringConcat cap == size", string.data.cap, string.data.size);
+
+  string_concat(&string, initial2);
+
+  for(int i = 0; i < string.data.size; i++){
+    char at = string_get(&string, i);
+    assert.equal("String::stringConcat iteration", at, complete2[i]);
+  };
+
+  assert.equal("String::stringConcat cap == size", string.data.cap, string.data.size);
+
 
   string_destroy(&string);
 };
@@ -177,6 +190,9 @@ inline void String::stringConcatString(){
     char at = string_get(&string, i);
     assert.equal("String::stringConcatString iteration", at, complete[i]);
   };
+
+  assert.equal("String::stringConcatString cap == size", string.data.cap, string.data.size);
+
 
   string_destroy(&string);
 };
@@ -225,6 +241,12 @@ inline void String::stringFind() {
   at = string_find(&string, "d");
   assert.equal("String::stringFind 'd'", at, 10);
 
+  at = string_find(&string, "Hello World");
+  assert.equal("String::stringFind 'Hello World'", at, 0);
+
+  at = string_find(&string, "Hello Worldd");
+  assert.equal("String::stringFind 'Hello Worldd'", at, -1);
+
   string_destroy(&string);
 };
 
@@ -247,12 +269,16 @@ inline void String::stringErase() {
     assert.equal("String::stringErase iteration 1", at, correct[i]);
   };
 
+  assert.equal("String::stringErase cap == size 1", string.data.cap, string.data.size);
+
   string_erase(&string, -1, 2);
 
   for(int i = 0; i < string.data.size; i++){
     char at = string_get(&string, i);
     assert.equal("String::stringErase iteration 2", at, correct2[i]);
   };
+
+  assert.equal("String::stringErase cap == size 2", string.data.cap, string.data.size);
 
 
   string_destroy(&string);

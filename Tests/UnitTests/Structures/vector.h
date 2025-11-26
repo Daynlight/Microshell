@@ -15,13 +15,18 @@ public:
 
   void vectorResize();
   void vectorReserve();
+  void vectorShrink();
   void vectorAlloc();
+  void vectorFit();
 
-  void vectorGet();
-  void vectorSet();
-  void vectorPop();
-  
   void vectorPush();
+  void vectorPop();
+
+  void vectorErase();
+  void vectorClean();
+
+  void vectorSet();
+  void vectorGet();
 
   void vectorCopy();
 };
@@ -36,16 +41,24 @@ public:
 
 
 
-inline bool Vector::runAll(){
+bool Vector::runAll(){
   printf("==== Vector Tests ====\n");
 
   vectorInit();
   vectorDestroy();
+  
   vectorResize();
   vectorReserve();
+  vectorShrink();
   vectorAlloc();
+  vectorFit();
+
   vectorGet();
   vectorSet();
+
+  vectorErase();
+  vectorClean();
+  
   vectorPush();
   vectorPop();
   vectorCopy();
@@ -58,7 +71,7 @@ inline bool Vector::runAll(){
 
 
 
-inline void Vector::vectorInit() {
+void Vector::vectorInit() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -75,7 +88,7 @@ inline void Vector::vectorInit() {
 
 
 
-inline void Vector::vectorDestroy() {
+void Vector::vectorDestroy() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
   vector_destroy(&vec);
@@ -88,11 +101,11 @@ inline void Vector::vectorDestroy() {
 
 
 
-inline void Vector::vectorResize() {
+void Vector::vectorResize() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
   unsigned int prev_cap = vec.cap;
-  unsigned int estimated_cap = prev_cap * 2 + 1;
+  unsigned int estimated_cap = prev_cap * 2;
 
   vector_resize(&vec);
   unsigned int new_cap = vec.cap;
@@ -108,7 +121,7 @@ inline void Vector::vectorResize() {
 
 
 
-inline void Vector::vectorReserve() {
+void Vector::vectorReserve() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -130,7 +143,46 @@ inline void Vector::vectorReserve() {
 
 
 
-inline void Vector::vectorAlloc() {
+void Structures::UnitTests::Vector::vectorFit(){
+  struct vector vec;
+  vector_init(&vec, sizeof(int));
+
+  vector_fit(&vec, 12);
+
+  assert.equal("Vector::vectorFit cap", vec.cap, 12);
+  vector_destroy(&vec);
+};
+
+
+
+
+
+
+void Structures::UnitTests::Vector::vectorShrink(){
+  struct vector vec;
+  vector_init(&vec, sizeof(int));
+
+  for(int i = 0; i < 20; i++){
+    vector_push(&vec, (char*)&i);
+  };
+
+  vector_reserve(&vec, 20);
+
+  assert.notEqual("Vector::vectorShrink cap != size", vec.cap, vec.size);
+
+  vector_shrink(&vec);
+
+  assert.equal("Vector::vectorShrink cap == size", vec.cap, vec.size);
+
+  vector_destroy(&vec);
+};
+
+
+
+
+
+
+void Vector::vectorAlloc() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -142,7 +194,7 @@ inline void Vector::vectorAlloc() {
   unsigned int estimated_size = prev_size + elements;
   unsigned int estimated_cap = prev_size + elements;
 
-  vector_alloc(&vec, elements, (char*)&a);
+  vector_alloc(&vec, (char*)&a, elements);
 
 
   assert.equal("Vector::vectorAlloc size", vec.size, estimated_size);
@@ -163,7 +215,7 @@ inline void Vector::vectorAlloc() {
 
 
 
-inline void Vector::vectorGet() {
+void Vector::vectorGet() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -186,7 +238,7 @@ inline void Vector::vectorGet() {
 
 
 
-inline void Vector::vectorSet() {
+void Vector::vectorSet() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -213,7 +265,7 @@ inline void Vector::vectorSet() {
 
 
 
-inline void Vector::vectorPop() {
+void Vector::vectorPop() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -236,7 +288,7 @@ inline void Vector::vectorPop() {
 
 
 
-inline void Vector::vectorPush() {
+void Vector::vectorPush() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -261,7 +313,68 @@ inline void Vector::vectorPush() {
 
 
 
-inline void Vector::vectorCopy() {
+void Structures::UnitTests::Vector::vectorClean(){
+  struct vector vec;
+  vector_init(&vec, sizeof(int));
+
+  int a[20];
+
+  for(int i = 0; i < 20; i++)
+    vector_push(&vec, (char*)&a[i]);
+
+  assert.equal("Vector::vectorClean size", vec.size, 20);
+  assert.equal("Vector::vectorClean cap", vec.cap, 32);
+
+  vector_clean(&vec);
+
+  assert.equal("Vector::vectorClean size", vec.size, 0);
+  assert.equal("Vector::vectorClean cap", vec.cap, 32);  
+};
+
+
+
+
+
+
+
+void Structures::UnitTests::Vector::vectorErase(){
+  struct vector vec;
+  vector_init(&vec, sizeof(int));
+
+  int a[6] = {0, 1, 2, 3, 4, 5};
+  int c1[3] = {3, 4, 5};
+  int c2 = 4;
+
+  for(int i = 0; i < 6; i++)
+    vector_push(&vec, (char*)&a[i]);
+
+  vector_erase(&vec, 0, 2);
+
+  for(int i = 0; i < 3; i++){
+    int a = 0;
+    vector_get(&vec, (char*)&a, i);
+    assert.equal("Vector::vectorErase 1", a, c1[i]);
+  };
+
+  vector_erase(&vec, -1, 0);
+
+  for(int i = 0; i < 1; i++){
+    int a = 0;
+    vector_get(&vec, (char*)&a, i);
+    assert.equal("Vector::vectorErase 2", a, c2);
+  }
+
+
+  vector_destroy(&vec);
+};
+
+
+
+
+
+
+
+void Vector::vectorCopy() {
   struct vector vec1;
   vector_init(&vec1, sizeof(int));
 

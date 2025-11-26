@@ -42,6 +42,7 @@ const char* string_get_ptr(const struct string* string);
 
 void string_init(struct string *string){
   vector_init(&string->data, sizeof(char));
+  vector_push(&string->data, (char*)&"\0");
 };
 
 
@@ -53,6 +54,7 @@ void string_init_initial(struct string *string, const char *initial_data) {
   vector_init(&string->data, sizeof(char));
   unsigned int initial_data_size = strlen(initial_data);
   vector_reserve(&string->data, initial_data_size);
+  
   for(int i = 0; i < initial_data_size; i++)
     vector_push(&string->data, &initial_data[i]);
 };
@@ -128,13 +130,15 @@ void string_concat_string(struct string *dest, const struct string *src) {
     return;
 
   unsigned int additional_size = src->data.size;
-  
+
   vector_reserve(&dest->data, additional_size);
 
   for(unsigned int i = 0; i < additional_size; i++){
     char at = string_get(src, i);
     vector_push(&dest->data, &at);
   };
+
+  vector_shrink(&dest->data);
 };
 
 
@@ -144,8 +148,11 @@ void string_concat_string(struct string *dest, const struct string *src) {
 
 const int string_find(const struct string* string, const char* el){
   unsigned int i = 0;
-
   unsigned int el_size = strlen(el);
+
+  if(el_size > string->data.size)
+    return -1;
+
  
   char found = 0;
 
@@ -178,21 +185,10 @@ const int string_find(const struct string* string, const char* el){
 void string_erase(struct string* string, const int x, const int y){
   if(!string && string->data.size <= 0)
     return;
-  int p_x = (x % string->data.size + string->data.size) % string->data.size;
-  int p_y = (y % string->data.size + string->data.size) % string->data.size;
-  
-  unsigned int size = p_y - p_x + 1;
-  unsigned int prev_size = string->data.size;
-  
-  if(p_x > p_y){
-    string_erase(string, p_x, string->data.size - 1);
-    string_erase(string, 0, p_y);
-  }
-  else{
-    memmove(string->data.data + p_x, string->data.data + p_y + 1, prev_size - p_y);
-    vector_set(&string->data, (char*)&"\0", prev_size - size);
-    string->data.size -= size;
-  };
+
+  vector_erase(&string->data, x, y);
+
+  vector_shrink(&string->data);
 };
 
 

@@ -296,29 +296,38 @@ Vector is dynamic array that allows storing dynamic data that can change with ti
 ##### In this project:
 
 ##### Fields:
+* cap --- tells how much space we have left before resize
+* size --- current vector size
+* size_of_el --- size of single element
+* data --- pointer to ```char*``` real data
 
 ##### Complexity:
 
 ##### Functions:
-- [ ] void init(size_of_el, [none, reserve_size])
-- [ ] void destroy()
-- [ ] void reserve(size)
-- [ ] void resize(size)
-- [ ] void shrink() ^
-- [ ] void fit()    ^
-- [ ] void push(data)
-- [ ] char* pop()
-- [ ] void erase(x, y) -- it removes in [x, y] with edges, circular indexes
-- [ ] void clean()  ^
-- [ ] char* get(index)
-- [ ] void set(data, index)
-- [ ] void alloc(data, size)
+- [x] void init(size_of_el)
+- [x] void destroy()
+- [x] void resize()
+- [x] void reserve(additional_cap)
+- [x] void shrink()
+- [x] void alloc(data, size)
+- [x] void fit(size)
+- [x] void push(data)
+- [x] void pop(out_ptr)
+- [x] void erase(x, y) -- it removes in [x, y] with edges, circular indexes
+- [x] void clean()
+- [x] void get(out_ptr, index)
+- [x] void set(data, index)
+- [x] void copy(src_ptr, dest_ptr)
 
 ##### Error Handling:
 
 ##### Limitations:
 
 ##### Notes:
+- [ ] Change loops to memcpy 
+- [ ] Optimization
+- [ ] Error checking
+- [ ] Edge cases
 
 
 ### String 
@@ -370,8 +379,11 @@ Used for saving dynamic size names and path.
 ##### Usage:
 
 ##### Notes:
-- [ ] Shrink after erase.
-- [ ] Find edge case for string and el sizes.
+- [x] Shrink after erase and concat.
+- [x] Find edge case for string and el sizes.
+- [ ] Change loops to memcpy
+- [ ] Edge cases
+- [ ] Optimization
 - [ ] Error codes.
 
 
