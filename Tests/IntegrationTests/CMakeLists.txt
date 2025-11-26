@@ -15,4 +15,4 @@ set(headers_tests
 add_executable(IntegrationTests ${src_tests})
 target_include_directories(IntegrationTests PUBLIC ${headers_tests})
 
-add_test(NAME IntegrationTests COMMAND IntegrationTests)
+add_test(NAME IntegrationTests COMMAND $<TARGET_FILE:IntegrationTests>)

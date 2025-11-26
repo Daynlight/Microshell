@@ -15,4 +15,4 @@ set(headers_tests
 add_executable(UnitTests ${src_tests})
 target_include_directories(UnitTests PUBLIC ${headers_tests})
 
-add_test(NAME UnitTests COMMAND UnitTests)
+add_test(NAME UnitTests COMMAND $<TARGET_FILE:UnitTests>)
