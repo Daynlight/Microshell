@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 
-project(MicroshellTests LANGUAGES CXX)
+project(UnitTests LANGUAGES CXX)
 
 set(src_tests
   unit_tests.cpp
@@ -12,8 +12,7 @@ set(headers_tests
   ${CMAKE_SOURCE_DIR}/Tests/
 )
 
-add_executable(MicroshellTests ${src_tests})
-target_include_directories(MicroshellTests PUBLIC ${headers_tests})
+add_executable(UnitTests ${src_tests})
+target_include_directories(UnitTests PUBLIC ${headers_tests})
 
-enable_testing()
-add_test(NAME MicroshellTests COMMAND MicroshellTests)
+add_test(NAME UnitTests COMMAND UnitTests)
