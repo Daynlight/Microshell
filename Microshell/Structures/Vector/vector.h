@@ -25,6 +25,7 @@ void vector_destroy(struct vector* vector);
 
 void vector_resize(struct vector* vector);
 void vector_reserve(struct vector* vector, unsigned int cap);
+void vector_shrink(struct vector* vector);
 
 void vector_push(struct vector* vector, const char* data);
 void vector_pop(struct vector* vector, char* out);
@@ -87,6 +88,22 @@ void vector_resize(struct vector* vector) {
 
 void vector_reserve(struct vector *vector, unsigned int cap){
   unsigned int new_cap = vector->cap + cap; 
+  char* temp = (char*)calloc(new_cap, vector->size_of_el);
+  
+  memcpy(temp, vector->data, vector->size * vector->size_of_el);
+  free(vector->data);
+
+  vector->data = temp;
+  vector->cap = new_cap;
+};
+
+
+
+
+
+
+void vector_shrink(struct vector *vector){
+  unsigned int new_cap = vector->size; 
   char* temp = (char*)calloc(new_cap, vector->size_of_el);
   
   memcpy(temp, vector->data, vector->size * vector->size_of_el);

@@ -370,8 +370,8 @@ Used for saving dynamic size names and path.
 ##### Usage:
 
 ##### Notes:
-- [ ] Shrink after erase.
-- [ ] Find edge case for string and el sizes.
+- [x] Shrink after erase and concat.
+- [x] Find edge case for string and el sizes.
 - [ ] Error codes.
 
 

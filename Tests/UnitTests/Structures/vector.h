@@ -15,6 +15,7 @@ public:
 
   void vectorResize();
   void vectorReserve();
+  void vectorShrink();
   void vectorAlloc();
 
   void vectorGet();
@@ -43,6 +44,8 @@ inline bool Vector::runAll(){
   vectorDestroy();
   vectorResize();
   vectorReserve();
+  vectorShrink();
+  vectorShrink();
   vectorAlloc();
   vectorGet();
   vectorSet();
@@ -121,6 +124,30 @@ inline void Vector::vectorReserve() {
 
   assert.equal("Vector::vectorReserve cap", new_cap, estimated_cap);
   assert.notEqual("Vector::vectorReserve cap", new_cap, prev_cap);
+
+  vector_destroy(&vec);
+};
+
+
+
+
+
+
+void Structures::UnitTests::Vector::vectorShrink(){
+  struct vector vec;
+  vector_init(&vec, sizeof(int));
+
+  for(int i = 0; i < 20; i++){
+    vector_push(&vec, (char*)&i);
+  };
+
+  vector_reserve(&vec, 20);
+
+  assert.notEqual("Vector::vectorShrink cap != size", vec.cap, vec.size);
+
+  vector_shrink(&vec);
+
+  assert.equal("Vector::vectorShrink cap == size", vec.cap, vec.size);
 
   vector_destroy(&vec);
 };
