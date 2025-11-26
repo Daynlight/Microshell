@@ -81,6 +81,9 @@ void string_destroy(struct string* string){
 
 
 char string_get(const struct string* string, unsigned int index){
+  if(index >= string->data.size)
+    return 0;
+
   char at = 0;
   vector_get(&string->data, &at, index);
   return at;
@@ -92,6 +95,9 @@ char string_get(const struct string* string, unsigned int index){
 
 
 void string_set(struct string* string, char data, unsigned int index){
+  if(index >= string->data.size)
+    return;
+
   vector_set(&string->data, &data, index);
 };
 
@@ -101,6 +107,9 @@ void string_set(struct string* string, char data, unsigned int index){
 
 
 inline void string_concat(struct string *dest, const char *src){
+  if(strlen(src) <= 0)
+    return;
+  
   struct string temp;
   string_init_initial(&temp, src);
 
@@ -115,6 +124,9 @@ inline void string_concat(struct string *dest, const char *src){
 
 
 void string_concat_string(struct string *dest, const struct string *src) {
+  if(src->data.size <= 0)
+    return;
+
   unsigned int previous_size = src->data.size;
   unsigned int additional_size = src->data.size;
   
@@ -160,12 +172,8 @@ int string_find(const struct string* string, const char* el){
 
 
 void string_erase(struct string* string, const int x, const int y){
-  
-  int p_x = x % string->data.size;
-  int p_y = y % string->data.size;
-  
-  if(p_x < 0) p_x = string->data.size - p_x;
-  if(p_y < 0) p_y = string->data.size - p_y;
+  int p_x = (x % string->data.size + string->data.size) % string->data.size;
+  int p_y = (y % string->data.size + string->data.size) % string->data.size;
   
   unsigned int size = p_y - p_x + 1;
   unsigned int prev_size = string->data.size;
