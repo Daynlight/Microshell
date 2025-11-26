@@ -17,6 +17,7 @@ public:
   void vectorReserve();
   void vectorShrink();
   void vectorAlloc();
+  void vectorFit();
 
   void vectorGet();
   void vectorSet();
@@ -37,18 +38,21 @@ public:
 
 
 
-inline bool Vector::runAll(){
+bool Vector::runAll(){
   printf("==== Vector Tests ====\n");
 
   vectorInit();
   vectorDestroy();
+  
   vectorResize();
   vectorReserve();
   vectorShrink();
-  vectorShrink();
   vectorAlloc();
+  vectorFit();
+
   vectorGet();
   vectorSet();
+  
   vectorPush();
   vectorPop();
   vectorCopy();
@@ -61,7 +65,7 @@ inline bool Vector::runAll(){
 
 
 
-inline void Vector::vectorInit() {
+void Vector::vectorInit() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -78,7 +82,7 @@ inline void Vector::vectorInit() {
 
 
 
-inline void Vector::vectorDestroy() {
+void Vector::vectorDestroy() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
   vector_destroy(&vec);
@@ -91,11 +95,11 @@ inline void Vector::vectorDestroy() {
 
 
 
-inline void Vector::vectorResize() {
+void Vector::vectorResize() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
   unsigned int prev_cap = vec.cap;
-  unsigned int estimated_cap = prev_cap * 2 + 1;
+  unsigned int estimated_cap = prev_cap * 2;
 
   vector_resize(&vec);
   unsigned int new_cap = vec.cap;
@@ -111,7 +115,7 @@ inline void Vector::vectorResize() {
 
 
 
-inline void Vector::vectorReserve() {
+void Vector::vectorReserve() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -125,6 +129,21 @@ inline void Vector::vectorReserve() {
   assert.equal("Vector::vectorReserve cap", new_cap, estimated_cap);
   assert.notEqual("Vector::vectorReserve cap", new_cap, prev_cap);
 
+  vector_destroy(&vec);
+};
+
+
+
+
+
+
+void Structures::UnitTests::Vector::vectorFit(){
+  struct vector vec;
+  vector_init(&vec, sizeof(int));
+
+  vector_fit(&vec, 12);
+
+  assert.equal("Vector::vectorFit cap", vec.cap, 12);
   vector_destroy(&vec);
 };
 
@@ -157,7 +176,7 @@ void Structures::UnitTests::Vector::vectorShrink(){
 
 
 
-inline void Vector::vectorAlloc() {
+void Vector::vectorAlloc() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -169,7 +188,7 @@ inline void Vector::vectorAlloc() {
   unsigned int estimated_size = prev_size + elements;
   unsigned int estimated_cap = prev_size + elements;
 
-  vector_alloc(&vec, elements, (char*)&a);
+  vector_alloc(&vec, (char*)&a, elements);
 
 
   assert.equal("Vector::vectorAlloc size", vec.size, estimated_size);
@@ -190,7 +209,7 @@ inline void Vector::vectorAlloc() {
 
 
 
-inline void Vector::vectorGet() {
+void Vector::vectorGet() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -213,7 +232,7 @@ inline void Vector::vectorGet() {
 
 
 
-inline void Vector::vectorSet() {
+void Vector::vectorSet() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -240,7 +259,7 @@ inline void Vector::vectorSet() {
 
 
 
-inline void Vector::vectorPop() {
+void Vector::vectorPop() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -263,7 +282,7 @@ inline void Vector::vectorPop() {
 
 
 
-inline void Vector::vectorPush() {
+void Vector::vectorPush() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -288,7 +307,7 @@ inline void Vector::vectorPush() {
 
 
 
-inline void Vector::vectorCopy() {
+void Vector::vectorCopy() {
   struct vector vec1;
   vector_init(&vec1, sizeof(int));
 
