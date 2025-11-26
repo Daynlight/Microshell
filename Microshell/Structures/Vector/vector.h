@@ -32,6 +32,9 @@ void vector_fit(struct vector* vector, const unsigned int size);
 void vector_push(struct vector* vector, const char* data);
 void vector_pop(struct vector* vector, char* out);
 
+void vector_erase(struct vector* vector, const int x, const int y);
+void vector_clean(struct vector* vector);
+
 void vector_get(const struct vector* vector, char* out, const unsigned int index);
 void vector_set(struct vector* vector, const char* data, const unsigned int index);
 void vector_copy(const struct vector* src, struct vector* dest);
@@ -230,6 +233,48 @@ void vector_pop(struct vector* vector, char* out){
 
 
 
+
+void vector_erase(struct vector *vector, const int x, const int y){
+  if(vector->data == NULL)
+    return;
+
+  if(vector->size <= 0)
+    return;
+
+  int p_x = (x % vector->size + vector->size) % vector->size;
+  int p_y = (y % vector->size + vector->size) % vector->size;
+  
+  unsigned int size = p_y - p_x + 1;
+  unsigned int prev_size = vector->size;
+
+  if(p_x > p_y){
+    vector_erase(vector, p_x, vector->size - 1);
+    vector_erase(vector, 0, p_y);
+  }
+  else{
+    memmove(vector->data + p_x * vector->size_of_el, vector->data + (p_y + 1) * vector->size_of_el, (prev_size - p_y) * vector->size_of_el);
+    vector->size -= size;
+  };
+
+};
+
+
+
+
+
+void vector_clean(struct vector *vector)
+{
+  if(vector->data == NULL)
+    return;
+
+  free(vector->data);
+  vector->data = (char*)calloc(vector->cap, vector->size_of_el);
+
+  vector->size = 0;
+
+  if(vector->data == NULL)
+    return;
+};
 
 void vector_get(const struct vector* vector, char* out, const unsigned int index){
   if(vector->data == NULL)

@@ -313,8 +313,8 @@ Vector is dynamic array that allows storing dynamic data that can change with ti
 - [x] void fit(size)
 - [x] void push(data)
 - [x] void pop(out_ptr)
-- [ ] void erase(x, y) -- it removes in [x, y] with edges, circular indexes
-- [ ] void clean()
+- [x] void erase(x, y) -- it removes in [x, y] with edges, circular indexes
+- [x] void clean()
 - [x] void get(out_ptr, index)
 - [x] void set(data, index)
 - [x] void copy(src_ptr, dest_ptr)
@@ -326,6 +326,7 @@ Vector is dynamic array that allows storing dynamic data that can change with ti
 ##### Notes:
 - [ ] Change loops to memcpy 
 - [ ] Optimization
+- [ ] Error checking
 - [ ] Edge cases
 
 

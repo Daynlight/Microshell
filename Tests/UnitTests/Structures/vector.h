@@ -19,11 +19,14 @@ public:
   void vectorAlloc();
   void vectorFit();
 
-  void vectorGet();
-  void vectorSet();
-  void vectorPop();
-  
   void vectorPush();
+  void vectorPop();
+
+  void vectorErase();
+  void vectorClean();
+
+  void vectorSet();
+  void vectorGet();
 
   void vectorCopy();
 };
@@ -52,6 +55,9 @@ bool Vector::runAll(){
 
   vectorGet();
   vectorSet();
+
+  vectorErase();
+  vectorClean();
   
   vectorPush();
   vectorPop();
@@ -297,6 +303,67 @@ void Vector::vectorPush() {
   
   for(int i = 0; i < 20; i++)
     assert.equal("Vector::vectorPush", b[i], a[i]);
+
+  vector_destroy(&vec);
+};
+
+
+
+
+
+
+
+void Structures::UnitTests::Vector::vectorClean(){
+  struct vector vec;
+  vector_init(&vec, sizeof(int));
+
+  int a[20];
+
+  for(int i = 0; i < 20; i++)
+    vector_push(&vec, (char*)&a[i]);
+
+  assert.equal("Vector::vectorClean size", vec.size, 20);
+  assert.equal("Vector::vectorClean cap", vec.cap, 32);
+
+  vector_clean(&vec);
+
+  assert.equal("Vector::vectorClean size", vec.size, 0);
+  assert.equal("Vector::vectorClean cap", vec.cap, 32);  
+};
+
+
+
+
+
+
+
+void Structures::UnitTests::Vector::vectorErase(){
+  struct vector vec;
+  vector_init(&vec, sizeof(int));
+
+  int a[6] = {0, 1, 2, 3, 4, 5};
+  int c1[3] = {3, 4, 5};
+  int c2 = 4;
+
+  for(int i = 0; i < 6; i++)
+    vector_push(&vec, (char*)&a[i]);
+
+  vector_erase(&vec, 0, 2);
+
+  for(int i = 0; i < 3; i++){
+    int a = 0;
+    vector_get(&vec, (char*)&a, i);
+    assert.equal("Vector::vectorErase 1", a, c1[i]);
+  };
+
+  vector_erase(&vec, -1, 0);
+
+  for(int i = 0; i < 1; i++){
+    int a = 0;
+    vector_get(&vec, (char*)&a, i);
+    assert.equal("Vector::vectorErase 2", a, c2);
+  }
+
 
   vector_destroy(&vec);
 };
