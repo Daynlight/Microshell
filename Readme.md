@@ -65,9 +65,9 @@ This is small shell build on threads optimized for parallel operations and data 
 
 
 ## Components
-### Error Codes
+### ProgramCodes
 ##### Responsibility
-  * storing error codes for pipeline errors checking.
+  * storing program codes for pipeline errors checking.
 
 
 
@@ -280,6 +280,12 @@ This is small shell build on threads optimized for parallel operations and data 
 ---
 
 
+## ProgramCodes
+
+
+---
+
+
 ## Structures
 ### Vector
 ##### IDEA
@@ -310,19 +316,38 @@ Vector is dynamic array that allows storing dynamic data that can change with ti
 
 ##### Error Handling:
 
+##### Limitations:
+
+##### Notes:
+
 
 ### String 
 ##### IDEA 
 Dynamic string have no base size limitation and we can expand it as long as we have enough memory.
 
 ##### How it works:
+It creates vector of char. For operation we just adjust size and make operation. After ```erase``` it is shrink. When concat first we reserve space than we copy data.
 
 ##### In this project:
 Used for saving dynamic size names and path.
 
 ##### Fields:
+* vector --- vector that string is using.
 
 ##### Complexity:
+| function         | complexity  |
+|:----------------:|:-----------:|
+| init             | $O(1)$      |
+| init initial     | $O(n)$      |
+| init string      | $O(n)$      |
+| destroy          | $O(1)$      |
+| get              | $O(1)$      |
+| set              | $O(1)$      |
+| concat           | $O(n)$      |
+| concat string    | $O(n)$      |
+| find             | $O(n^2)$    |
+| erase            | $O(n)$      |
+| get_ptr          | $O(1)$      |
 
 ##### Functions:
 - [x] void init([none, initial, string {copy}])
@@ -335,6 +360,19 @@ Used for saving dynamic size names and path.
 - [x] char* get_ptr()
 
 ##### Error Handling:
+- Functions returns ```ProgramCodes``` with minus values where it can.
+- No error checking for ptr existence before first initialization.
+
+##### Limitations:
+- Every time we ```concat```, ```erase```, ```initialize``` we create new ptr and allocate memory what takes time.
+- We can't detect in ```C``` if ptr is initialized. But after initialization and destroy we set ptr to ```NULL```. Good practice is to initialize after creation.
+
+##### Usage:
+
+##### Notes:
+- [ ] Shrink after erase.
+- [ ] Find edge case for string and el sizes.
+- [ ] Error codes.
 
 
 ---
