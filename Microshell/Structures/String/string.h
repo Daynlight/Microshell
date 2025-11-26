@@ -20,7 +20,6 @@ void string_init(struct string* string, char* initial_data);
 void string_destroy(struct string* string);
 
 char string_at(struct string* string, unsigned int index);
-
 void string_set(struct string* string, char data, unsigned int index);
 
 void string_concat(struct string* string, struct string* string2);
