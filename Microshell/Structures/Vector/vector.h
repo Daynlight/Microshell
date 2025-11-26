@@ -26,14 +26,14 @@ void vector_destroy(struct vector* vector);
 void vector_resize(struct vector* vector);
 void vector_reserve(struct vector* vector, unsigned int cap);
 
-void vector_push(struct vector* vector, char* data);
+void vector_push(struct vector* vector, const char* data);
 void vector_pop(struct vector* vector, char* out);
 
-void vector_get(struct vector* vector, char* out, unsigned int index);
+void vector_get(const struct vector* vector, char* out, const unsigned int index);
 void vector_set(struct vector* vector, char* data, unsigned int index);
 
 void vector_alloc(struct vector* vector, unsigned int size, char* data);
-void vector_copy(struct vector* src, struct vector* dest);
+void vector_copy(const struct vector* src, struct vector* dest);
 
 
 
@@ -101,7 +101,7 @@ void vector_reserve(struct vector *vector, unsigned int cap){
 
 
 
-void vector_push(struct vector *vector, char *data){
+void vector_push(struct vector *vector, const char *data){
   if(vector->size >= vector->cap)
     vector_resize(vector);
   
@@ -122,7 +122,7 @@ void vector_pop(struct vector* vector, char* out){
 
 
 
-void vector_get(struct vector* vector, char* out, unsigned int index){
+void vector_get(const struct vector* vector, char* out, const unsigned int index){
   if(index >= vector->size) {
     fprintf(stderr, "vector_get error: index %u out of range (size=%u)\n",
             index, vector->size);
@@ -164,7 +164,7 @@ void vector_alloc(struct vector *vector, unsigned int size, char *data){
 
 
 
-inline void vector_copy(struct vector *src, struct vector *dest) {
+inline void vector_copy(const struct vector *src, struct vector *dest) {
   dest->size_of_el = src->size_of_el;
   dest->cap = src->cap;
   dest->size = src->size;

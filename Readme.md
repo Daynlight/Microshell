@@ -252,9 +252,10 @@ Used for saving dynamic size names and path.
 ##### Functions:
 - [x] void init([none, initial, string {copy}])
 - [x] void destroy()
-- [ ] char& at(index)
-- [ ] void concat([string, char*])
-- [ ] int find(el)
+- [x] char get(index)
+- [x] void set(data, index)
+- [x] void concat([string, char*])
+- [x] int find(char*)
 - [ ] void erase(x, y) -- it removes in [x, y] with edges, circular indexes
 - [x] char* get_ptr()
 

@@ -15,19 +15,20 @@ struct string{
 };
 
 void string_init(struct string* string);
-void string_init_initial(struct string* string, char* initial_data);
-void string_init_initial_string(struct string* string, struct string* initial_data);
+void string_init_initial(struct string* string, const char* initial_data);
+void string_init_initial_string(struct string* string, const struct string* initial_data);
 
 void string_destroy(struct string* string);
 
-char string_at(struct string* string, unsigned int index);
-void string_set(struct string* string, char data, unsigned int index);
+char string_get(const struct string* string, const unsigned int index);
+void string_set(struct string* string, const char data, const unsigned int index);
 
-void string_concat(struct string* string, struct string* string2);
-int string_find(struct string* string, char el);
-void string_erase(struct string* string, unsigned int x, unsigned int y);
+void string_concat(struct string* dest, const char* src);
+void string_concat_string(struct string* dest, const struct string* src);
+int string_find(const struct string* string, const char* el);
+void string_erase(struct string* string, const unsigned int x, const unsigned int y);
 
-char* string_get_ptr(struct string* string);
+char* string_get_ptr(const struct string* string);
 
 
 
@@ -48,7 +49,7 @@ void string_init(struct string *string){
 
 
 
-void string_init_initial(struct string *string, char *initial_data) {
+void string_init_initial(struct string *string, const char *initial_data) {
   vector_init(&string->data, sizeof(char));
   unsigned int initial_data_size = strlen(initial_data);
   vector_reserve(&string->data, initial_data_size);
@@ -61,7 +62,7 @@ void string_init_initial(struct string *string, char *initial_data) {
 
 
 
-inline void string_init_initial_string(struct string *string, struct string *initial_data) {
+inline void string_init_initial_string(struct string *string, const struct string *initial_data) {
   vector_copy(&initial_data->data, &string->data);
 };
 
@@ -79,7 +80,7 @@ void string_destroy(struct string* string){
 
 
 
-char string_at(struct string* string, unsigned int index){
+char string_get(const struct string* string, unsigned int index){
   char at = 0;
   vector_get(&string->data, &at, index);
   return at;
@@ -99,16 +100,13 @@ void string_set(struct string* string, char data, unsigned int index){
 
 
 
-void string_concat(struct string* string, struct string* string2){
-  unsigned int previous_size = string->data.size;
-  unsigned int additional_size = string2->data.size;
-  
-  vector_reserve(&string->data, additional_size);
+inline void string_concat(struct string *dest, const char *src){
+  struct string temp;
+  string_init_initial(&temp, src);
 
-  for(unsigned int i = 0; i < additional_size; i++){
-    char at = string_at(string2, i);
-    vector_push(&string->data, &at);
-  };
+  string_concat_string(dest, &temp);
+
+  string_destroy(&temp);
 };
 
 
@@ -116,17 +114,42 @@ void string_concat(struct string* string, struct string* string2){
 
 
 
-int string_find(struct string* string, char el){
-  char found = 0;
+void string_concat_string(struct string *dest, const struct string *src) {
+  unsigned int previous_size = src->data.size;
+  unsigned int additional_size = src->data.size;
+  
+  vector_reserve(&dest->data, additional_size);
+
+  for(unsigned int i = 0; i < additional_size; i++){
+    char at = string_get(src, i);
+    vector_push(&dest->data, &at);
+  };
+};
+
+int string_find(const struct string* string, const char* el){
   unsigned int i = 0;
+
+  unsigned int el_size = strlen(el);
+ 
+  char found = 0;
+
   do{
-    char at = string_at(string, i);
-    if(at == el)
+    found = 1;
+
+    for(int j = 0; j < el_size; j++){
+      char at = string_get(string, i + j);
+      if(el[j] != at){
+        found = 0;
+        continue;
+      };
+    };
+
+    if(found)
       return i;
     
     i++;
   }
-  while(i < string->data.size && !found);  
+  while(found == 0 && i < string->data.size - el_size + 1);  
   
   return -1;
 };
@@ -155,7 +178,7 @@ void string_erase(struct string* string, unsigned int x, unsigned int y){
 
 
 
-char* string_get_ptr(struct string* string){
+char* string_get_ptr( const struct string* string){
   return string->data.data;
 };
 
