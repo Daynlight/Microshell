@@ -9,12 +9,18 @@ This is small shell build on threads optimized for parallel operations and data 
 ---
 
 
+## Screenshots
+
+
+---
+
+
 ## TOC
 - [About](#about)
+- [Screenshots](#screenshots)
 - [TOC](#toc)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Screenshots](#screenshots)
 - [Diagram](#diagram)
 - [Components](#components)
   - [Error Codes](#error-codes)
@@ -190,12 +196,6 @@ This is small shell build on threads optimized for parallel operations and data 
 
 
 ## Usage
-
-
----
-
-
-## Screenshots
 
 
 ---
