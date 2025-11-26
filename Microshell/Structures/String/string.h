@@ -1,5 +1,3 @@
-
-
 #ifndef STRING_H
 #define STRING_H
 
@@ -16,7 +14,10 @@ struct string{
   struct vector data;
 };
 
-void string_init(struct string* string, char* initial_data);
+void string_init(struct string* string);
+void string_init_initial(struct string* string, char* initial_data);
+void string_init_initial_string(struct string* string, struct string* initial_data);
+
 void string_destroy(struct string* string);
 
 char string_at(struct string* string, unsigned int index);
@@ -26,6 +27,7 @@ void string_concat(struct string* string, struct string* string2);
 int string_find(struct string* string, char el);
 void string_erase(struct string* string, unsigned int x, unsigned int y);
 
+char* string_get_ptr(struct string* string);
 
 
 
@@ -37,13 +39,30 @@ void string_erase(struct string* string, unsigned int x, unsigned int y);
 
 
 
+void string_init(struct string *string){
+  vector_init(&string->data, sizeof(char));
+};
 
-void string_init(struct string* string, char* initial_data){
+
+
+
+
+
+void string_init_initial(struct string *string, char *initial_data) {
   vector_init(&string->data, sizeof(char));
   unsigned int initial_data_size = strlen(initial_data);
   vector_reserve(&string->data, initial_data_size);
   for(int i = 0; i < initial_data_size; i++)
     vector_push(&string->data, &initial_data[i]);
+};
+
+
+
+
+
+
+inline void string_init_initial_string(struct string *string, struct string *initial_data) {
+  vector_copy(&initial_data->data, &string->data);
 };
 
 

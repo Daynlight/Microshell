@@ -1,6 +1,6 @@
 # Microshell
 ## About
-This is small shell build on threads optimized for parallel operations
+This is small shell build on threads optimized for parallel operations and data batching. Main focus is to make it work for multiple operations at the same time. Contains only own implementations of structures no libs. Uses a lot of dynamic arrays.
 
 
 
@@ -223,14 +223,45 @@ This is small shell build on threads optimized for parallel operations
 
 ## Structures
 ### Vector
+##### IDEA
+Vector is dynamic array that allows storing dynamic data that can change with time We want it for unordered_map and string.
+
+##### Functions:
+- init
+- destroy
+- reserve
+- resize
+- shrink ^
+- fit    ^
+- push
+- pop
+- erase
+- clean  ^
+- get
+- set
+- alloc
 
 
-### String
+### String 
+##### IDEA 
+Dynamic string have no base size limitation and we can expand it as long as we have enough memory.
+
+##### In this project:
+Used for saving dynamic size names and path.
+
+##### Functions:
+- void init([none, initial, string {copy}])
+- void destroy()
+- char& at(index)
+- void concat([string, char*])
+- int find(el)
+- void erase(x, y) -- it removes in [x, y] with edges, circular indexes
+- char* get_ptr()
 
 
 
 
-## Requirements
+## Features
 - [ ] User name
 - [ ] ^ encouragement sign {path} $
 - [ ] ^ cd
@@ -238,11 +269,6 @@ This is small shell build on threads optimized for parallel operations
 - [ ] ^ execute form PATH: ```fork + exec*()```
 - [ ] ^ Error Comuniact: When can't parsee command
 - [ ] ^ help: Info + Features + Commands
-
-
-
-
-## Features
 - [ ] Data I/O
 - [ ] History Controller
 - [ ] Prefix Controller

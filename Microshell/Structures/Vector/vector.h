@@ -1,32 +1,3 @@
-//////////////////////////
-///////// vector /////////
-//////////////////////////
-//// IDEA ////
-// A vector is a dynamic array that can grow when needed.
-// It lets us store data even when we don't know how many elements we will need.
-// Useful for unordered_map, paths, lists, and more.
-
-//// How it works: ////
-// A vector keeps two numbers:
-//   * size     — how many elements are currently stored
-//   * capacity — how much space is allocated
-//
-// When adding elements:
-//   * If size < capacity, we just insert the new element.
-//   * If size == capacity, we need more room:
-//       - allocate a new larger buffer
-//       - copy all existing elements to it
-//       - free the old buffer
-//       - replace it with the new one
-//
-// This allows the vector to grow dynamically
-// as long as the system has memory available.
-
-//// TL;TR ////
-// * When capacity is full, allocate a larger buffer,
-//   copy elements, and continue using the new one.
-
-
 #ifndef VECTOR_H
 #define VECTOR_H
 
@@ -62,6 +33,7 @@ void vector_get(struct vector* vector, char* out, unsigned int index);
 void vector_set(struct vector* vector, char* data, unsigned int index);
 
 void vector_alloc(struct vector* vector, unsigned int size, char* data);
+void vector_copy(struct vector* src, struct vector* dest);
 
 
 
@@ -185,6 +157,22 @@ void vector_alloc(struct vector *vector, unsigned int size, char *data){
   vector_reserve(vector, missing_space);
   for(int i = 0; i < size; i++)
     vector_push(vector, data);
+};
+
+
+
+
+
+
+inline void vector_copy(struct vector *src, struct vector *dest) {
+  dest->size_of_el = src->size_of_el;
+  dest->cap = src->cap;
+  dest->size = src->size;
+  
+  free(dest->data);
+  dest->data = (char*)calloc(dest->cap, dest->size_of_el);
+
+  memcpy(dest->data, src->data, src->size * src->size_of_el);
 };
 
 
