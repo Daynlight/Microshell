@@ -127,10 +127,6 @@ void string_concat_string(struct string *dest, const struct string *src) {
   if(src->data.size <= 0)
     return;
 
-<<<<<<< HEAD
-  unsigned int previous_size = src->data.size;
-=======
->>>>>>> dev
   unsigned int additional_size = src->data.size;
   
   vector_reserve(&dest->data, additional_size);
