@@ -65,15 +65,9 @@ This is small shell build on threads optimized for parallel operations and data 
 
 
 ## Components
-<<<<<<< HEAD
-### Error Codes
-##### Responsibility
-  * storing error codes for pipeline errors checking.
-=======
 ### ProgramCodes
 ##### Responsibility
   * storing program codes for pipeline errors checking.
->>>>>>> dev
 
 
 
