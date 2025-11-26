@@ -250,13 +250,14 @@ Dynamic string have no base size limitation and we can expand it as long as we h
 Used for saving dynamic size names and path.
 
 ##### Functions:
-- void init([none, initial, string {copy}])
-- void destroy()
-- char& at(index)
-- void concat([string, char*])
-- int find(el)
-- void erase(x, y) -- it removes in [x, y] with edges, circular indexes
-- char* get_ptr()
+- [x] void init([none, initial, string {copy}])
+- [x] void destroy()
+- [x] char get(index)
+- [x] void set(data, index)
+- [x] void concat([string, char*])
+- [x] int find(char*)
+- [x] void erase(x, y) -- it removes in [x, y] with edges, circular indexes
+- [x] char* get_ptr()
 
 
 
