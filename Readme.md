@@ -221,6 +221,15 @@ This is small shell build on threads optimized for parallel operations
 
 
 
+## Structures
+### Vector
+
+
+### String
+
+
+
+
 ## Requirements
 - [ ] User name
 - [ ] ^ encouragement sign {path} $
