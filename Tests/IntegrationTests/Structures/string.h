@@ -2,7 +2,7 @@
 #include "Assert.h"
 
 
-namespace Structures::UnitTests{
+namespace Structures::IntegrationTests{
 class String{
 private:
   Tests::Assert assert;
@@ -273,7 +273,7 @@ inline void String::stringSet() {
 
   string_set(&string, 'b', 1);
 
-  char* ptr = string_get_ptr(&string);
+  const char* ptr = string_get_ptr(&string);
 
   for(int i = 0; i < string.data.size; i++)
     assert.equal("String::stringGetPtr iteration", ptr[i], correct[i]);
@@ -292,7 +292,7 @@ inline void String::stringGetPtr() {
 
   string_init_initial(&string, initial);
 
-  char* ptr = string_get_ptr(&string);
+  const char* ptr = string_get_ptr(&string);
 
   for(int i = 0; i < string.data.size; i++)
     assert.equal("String::stringGetPtr iteration", ptr[i], initial[i]);

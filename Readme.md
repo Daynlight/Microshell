@@ -1,8 +1,60 @@
-# Microshell
+<div align=center>
+  <h1>Microshell</h1>
+</div>
+
 ## About
 This is small shell build on threads optimized for parallel operations and data batching. Main focus is to make it work for multiple operations at the same time. Contains only own implementations of structures no libs. Uses a lot of dynamic arrays.
 
 
+---
+
+
+## Screenshots
+
+
+---
+
+
+## TOC
+- [About](#about)
+- [Screenshots](#screenshots)
+- [TOC](#toc)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Diagram](#diagram)
+- [Components](#components)
+  - [Error Codes](#error-codes)
+  - [Log System (SINGLETON)](#log-system-singleton)
+  - [Microshell Initialize](#microshell-initialize)
+  - [Microshell Destroy](#microshell-destroy)
+  - [Shared Memory](#shared-memory)
+  - [Helpers](#helpers)
+  - [Input Layer](#input-layer)
+  - [Processing Layer](#processing-layer)
+  - [Process Thread](#process-thread)
+  - [Own Commands](#own-commands)
+  - [Output Layer](#output-layer)
+- [Error Handling](#error-handling-32)
+- [Structures](#structures)
+  - [Vector](#vector)
+  - [String](#string)
+- [Tests](#tests)
+- [Features](#features)
+
+
+---
+
+
+## Installation
+
+
+---
+
+
+## Usage
+
+
+---
 
 
 ## Diagram
@@ -219,6 +271,13 @@ This is small shell build on threads optimized for parallel operations and data 
 ##### Error Handling
 
 
+---
+
+
+## Error Handling
+
+
+---
 
 
 ## Structures
@@ -226,28 +285,44 @@ This is small shell build on threads optimized for parallel operations and data 
 ##### IDEA
 Vector is dynamic array that allows storing dynamic data that can change with time We want it for unordered_map and string.
 
+##### How it works:
+
+##### In this project:
+
+##### Fields:
+
+##### Complexity:
+
 ##### Functions:
-- init
-- destroy
-- reserve
-- resize
-- shrink ^
-- fit    ^
-- push
-- pop
-- erase
-- clean  ^
-- get
-- set
-- alloc
+- [ ] void init(size_of_el, [none, reserve_size])
+- [ ] void destroy()
+- [ ] void reserve(size)
+- [ ] void resize(size)
+- [ ] void shrink() ^
+- [ ] void fit()    ^
+- [ ] void push(data)
+- [ ] char* pop()
+- [ ] void erase(x, y) -- it removes in [x, y] with edges, circular indexes
+- [ ] void clean()  ^
+- [ ] char* get(index)
+- [ ] void set(data, index)
+- [ ] void alloc(data, size)
+
+##### Error Handling:
 
 
 ### String 
 ##### IDEA 
 Dynamic string have no base size limitation and we can expand it as long as we have enough memory.
 
+##### How it works:
+
 ##### In this project:
 Used for saving dynamic size names and path.
+
+##### Fields:
+
+##### Complexity:
 
 ##### Functions:
 - [x] void init([none, initial, string {copy}])
@@ -259,7 +334,16 @@ Used for saving dynamic size names and path.
 - [x] void erase(x, y) -- it removes in [x, y] with edges, circular indexes
 - [x] char* get_ptr()
 
+##### Error Handling:
 
+
+---
+
+
+## Tests
+
+
+---
 
 
 ## Features

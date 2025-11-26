@@ -11,7 +11,7 @@ jobs:
   build-and-test:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         config: [Debug, Release]
     runs-on: ${{ matrix.os }}
 
@@ -27,15 +27,17 @@ jobs:
       - name: Configure CMake
         shell: bash
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+          cmake -S . -B build
 
       - name: Build Tests
         shell: bash
         run: |
-          cmake --build build --target MicroshellTests --parallel
+          cmake --build build --target UnitTests --config ${{ matrix.config }} --parallel
+          cmake --build build --target IntegrationTests --config ${{ matrix.config }} --parallel
+
 
       - name: Run Tests
         shell: bash
         working-directory: build
         run: |
-          ctest -R Tests --output-on-failure
+          ctest -C ${{ matrix.config }} -R Tests --output-on-failure
