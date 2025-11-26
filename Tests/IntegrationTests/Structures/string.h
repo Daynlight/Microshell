@@ -2,7 +2,7 @@
 #include "Assert.h"
 
 
-namespace Structures::UnitTests{
+namespace Structures::IntegrationTests{
 class String{
 private:
   Tests::Assert assert;
