@@ -53,7 +53,7 @@ inline bool String::runAll(){
 inline void String::stringInit() {
   struct string string;
   char initial[] = "Hello World";
-  string_init(&string, initial);
+  string_init_initial(&string, initial);
 
   assert.isNotNullptr("String::stringInit data", (const char*)&string.data);
 
@@ -73,7 +73,7 @@ inline void String::stringInit() {
 inline void String::stringDestroy() {
   struct string string;
   char initial[] = "Hello World";
-  string_init(&string, initial);
+  string_init_initial(&string, initial);
   string_destroy(&string);
   assert.isNullptr("String::stringDestroy data", string.data.data);
 };
@@ -90,8 +90,8 @@ inline void String::stringConcat() {
   char initial2[] = "World";
   char complete[] = "Hello World";
   
-  string_init(&string, initial);
-  string_init(&string2, initial2);
+  string_init_initial(&string, initial);
+  string_init_initial(&string2, initial2);
   string_concat(&string, &string2);
 
   for(int i = 0; i < string.data.size; i++){
@@ -110,7 +110,7 @@ inline void String::stringConcat() {
 inline void String::stringAt() {
   struct string string;
   char initial[] = "Hello World";
-  string_init(&string, initial);
+  string_init_initial(&string, initial);
 
   char at = string_at(&string, 3);
   assert.equal("String::stringAt at 3", at, initial[3]);
@@ -129,7 +129,7 @@ inline void String::stringAt() {
 inline void String::stringFind() {
   struct string string;
   char initial[] = "Hello World";
-  string_init(&string, initial);
+  string_init_initial(&string, initial);
 
   int at = string_find(&string, 'o');
   assert.equal("String::stringFind 'o'", at, 4);
@@ -150,7 +150,7 @@ inline void String::stringErase() {
   char initial[] = "Hello World";
   char correct[] = "He World";
 
-  string_init(&string, initial);
+  string_init_initial(&string, initial);
   string_erase(&string, 2, 4);
 
   for(int i = 0; i < string.data.size; i++){
@@ -172,7 +172,7 @@ inline void String::stringSet() {
   char correct[] = "Hbllo World";
 
 
-  string_init(&string, initial);
+  string_init_initial(&string, initial);
 
   string_set(&string, 'b', 1);
 
@@ -193,7 +193,7 @@ inline void String::stringGetPtr() {
   struct string string;
   char initial[] = "Hello World";
 
-  string_init(&string, initial);
+  string_init_initial(&string, initial);
 
   char* ptr = string_get_ptr(&string);
 

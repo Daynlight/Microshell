@@ -22,6 +22,8 @@ public:
   void vectorPop();
   
   void vectorPush();
+
+  void vectorCopy();
 };
 
 
@@ -46,6 +48,7 @@ inline bool Vector::runAll(){
   vectorSet();
   vectorPush();
   vectorPop();
+  vectorCopy();
 
   return assert.results("Vector");
 };
@@ -250,5 +253,34 @@ inline void Vector::vectorPush() {
     assert.equal("Vector::vectorPush", b[i], a[i]);
 
   vector_destroy(&vec);
+};
+
+
+
+
+
+
+
+inline void Vector::vectorCopy() {
+  struct vector vec1;
+  vector_init(&vec1, sizeof(int));
+
+  struct vector vec2;
+  vector_init(&vec2, sizeof(int));
+
+  int a[20];
+  for(int i = 0; i < 20; i++)
+    vector_push(&vec1, (char*)&a[i]);
+
+  vector_copy(&vec1, &vec2);
+
+  for(int i = 0; i < 20; i++){
+    int b = 0;
+    vector_get(&vec2, (char*)&b, i);
+    assert.equal("Vector::vectorCopy", b, a[i]);
+  }
+
+  vector_destroy(&vec2);
+  vector_destroy(&vec1);
 };
 };
