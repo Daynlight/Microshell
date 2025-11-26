@@ -10,6 +10,8 @@ public:
   bool runAll();
   
   void stringInit();
+  void stringInitInitialCharPtr();
+  void stringInitInitialString();
   void stringDestroy();
 
   void stringConcat();
@@ -34,6 +36,8 @@ inline bool String::runAll(){
   printf("==== String Tests ====\n");
 
   stringInit();
+  stringInitInitialString();
+  stringInitInitialCharPtr();
   stringDestroy();
   stringConcat();
   stringAt();
@@ -50,16 +54,63 @@ inline bool String::runAll(){
 
 
 
-inline void String::stringInit() {
+
+
+
+
+
+inline void String::stringInit(){
+  struct string string;
+  string_init(&string);
+
+  
+  assert.equal("String::stringInit size", string.data.size, 0);
+  assert.equal("String::stringInit size", string.data.cap, 1);
+  assert.isNotNullptr("String::stringInit data", (const char*)&string.data);
+  assert.equal("String::stringInit size", string.data.size_of_el, sizeof(char));
+
+
+  string_destroy(&string);
+};
+
+
+
+
+
+
+inline void String::stringInitInitialCharPtr(){
   struct string string;
   char initial[] = "Hello World";
   string_init_initial(&string, initial);
 
-  assert.isNotNullptr("String::stringInit data", (const char*)&string.data);
+  assert.isNotNullptr("String::stringInitInitialCharPtr data", (const char*)&string.data);
 
   for(int i = 0; i < string.data.size; i++){
     char at = string_at(&string, i);
-    assert.equal("String::stringInit iteration", at, initial[i]);
+    assert.equal("String::stringInitInitialCharPtr iteration", at, initial[i]);
+  }
+
+  string_destroy(&string);
+};
+
+
+
+
+
+
+inline void String::stringInitInitialString() {
+  struct string string;
+  char initial[] = "Hello World";
+  string_init_initial(&string, initial);
+
+  struct string string2;
+  string_init_initial_string(&string2, &string);
+
+  assert.isNotNullptr("String::stringInitInitialCharPtr data", (const char*)&string2.data);
+
+  for(int i = 0; i < string2.data.size; i++){
+    char at = string_at(&string2, i);
+    assert.equal("String::stringInitInitialCharPtr iteration", at, initial[i]);
   }
 
   string_destroy(&string);

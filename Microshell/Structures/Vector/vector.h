@@ -169,7 +169,6 @@ inline void vector_copy(struct vector *src, struct vector *dest) {
   dest->cap = src->cap;
   dest->size = src->size;
   
-  free(dest->data);
   dest->data = (char*)calloc(dest->cap, dest->size_of_el);
 
   memcpy(dest->data, src->data, src->size * src->size_of_el);
