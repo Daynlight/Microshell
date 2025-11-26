@@ -237,14 +237,23 @@ inline void String::stringErase() {
   struct string string;
   char initial[] = "Hello World";
   char correct[] = "He World";
+  char correct2[] = "Worl";
 
   string_init_initial(&string, initial);
   string_erase(&string, 2, 4);
 
   for(int i = 0; i < string.data.size; i++){
     char at = string_get(&string, i);
-    assert.equal("String::stringErase iteration", at, correct[i]);
+    assert.equal("String::stringErase iteration 1", at, correct[i]);
   };
+
+  string_erase(&string, -1, 2);
+
+  for(int i = 0; i < string.data.size; i++){
+    char at = string_get(&string, i);
+    assert.equal("String::stringErase iteration 2", at, correct2[i]);
+  };
+
 
   string_destroy(&string);
 };

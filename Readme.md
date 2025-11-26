@@ -256,7 +256,7 @@ Used for saving dynamic size names and path.
 - [x] void set(data, index)
 - [x] void concat([string, char*])
 - [x] int find(char*)
-- [ ] void erase(x, y) -- it removes in [x, y] with edges, circular indexes
+- [x] void erase(x, y) -- it removes in [x, y] with edges, circular indexes
 - [x] char* get_ptr()
 
 

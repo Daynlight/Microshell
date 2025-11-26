@@ -26,7 +26,7 @@ void string_set(struct string* string, const char data, const unsigned int index
 void string_concat(struct string* dest, const char* src);
 void string_concat_string(struct string* dest, const struct string* src);
 int string_find(const struct string* string, const char* el);
-void string_erase(struct string* string, const unsigned int x, const unsigned int y);
+void string_erase(struct string* string, const int x, const int y);
 
 char* string_get_ptr(const struct string* string);
 
@@ -159,18 +159,27 @@ int string_find(const struct string* string, const char* el){
 
 
 
-void string_erase(struct string* string, unsigned int x, unsigned int y){
-  if(x > y){
-    return;
-  };
-
-  unsigned int size = y - x + 1;
+void string_erase(struct string* string, const int x, const int y){
+  
+  int p_x = x % string->data.size;
+  int p_y = y % string->data.size;
+  
+  if(p_x < 0) p_x = string->data.size - p_x;
+  if(p_y < 0) p_y = string->data.size - p_y;
+  
+  unsigned int size = p_y - p_x + 1;
   unsigned int prev_size = string->data.size;
-
-  memmove(string->data.data + x, string->data.data + y + 1, prev_size - y);
-  char terminator[] = "\0";
-  vector_set(&string->data, (char*)&terminator, prev_size - size);
-  string->data.size -= size;
+  
+  if(p_x > p_y){
+    string_erase(string, p_x, string->data.size - 1);
+    string_erase(string, 0, p_y);
+  }
+  else{
+    memmove(string->data.data + p_x, string->data.data + p_y + 1, prev_size - p_y);
+    char terminator[] = "\0";
+    vector_set(&string->data, (char*)&terminator, prev_size - size);
+    string->data.size -= size;
+  };
 };
 
 
@@ -178,7 +187,7 @@ void string_erase(struct string* string, unsigned int x, unsigned int y){
 
 
 
-char* string_get_ptr( const struct string* string){
+char* string_get_ptr(const struct string* string){
   return string->data.data;
 };
 
