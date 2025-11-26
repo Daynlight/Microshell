@@ -55,7 +55,7 @@ void vector_destroy(struct vector* vector);
 void vector_resize(struct vector* vector);
 void vector_reserve(struct vector* vector, unsigned int cap);
 
-void vector_emplace_back(struct vector* vector, char* data);
+void vector_push(struct vector* vector, char* data);
 void vector_pop(struct vector* vector, char* out);
 
 void vector_get(struct vector* vector, char* out, unsigned int index);
@@ -129,7 +129,7 @@ void vector_reserve(struct vector *vector, unsigned int cap){
 
 
 
-void vector_emplace_back(struct vector *vector, char *data){
+void vector_push(struct vector *vector, char *data){
   if(vector->size >= vector->cap)
     vector_resize(vector);
   
@@ -184,8 +184,10 @@ void vector_alloc(struct vector *vector, unsigned int size, char *data){
   unsigned int missing_space = 2 * vector->size + size - vector->cap;
   vector_reserve(vector, missing_space);
   for(int i = 0; i < size; i++)
-    vector_emplace_back(vector, data);
+    vector_push(vector, data);
 };
+
+
 
 
 

@@ -21,7 +21,7 @@ public:
   void vectorSet();
   void vectorPop();
   
-  void vectorEmplaceBack();
+  void vectorPush();
 };
 
 
@@ -44,7 +44,7 @@ inline bool Vector::runAll(){
   vectorAlloc();
   vectorGet();
   vectorSet();
-  vectorEmplaceBack();
+  vectorPush();
   vectorPop();
 
   return assert.results("Vector");
@@ -165,7 +165,7 @@ inline void Vector::vectorGet() {
   vector_init(&vec, sizeof(int));
 
   for(int i = 0; i < 20; i++)
-    vector_emplace_back(&vec, (char*)&i);
+    vector_push(&vec, (char*)&i);
 
   
   for(int i = 0; i < 20; i++){
@@ -188,7 +188,7 @@ inline void Vector::vectorSet() {
   vector_init(&vec, sizeof(int));
 
   for(int i = 0; i < 20; i++)
-    vector_emplace_back(&vec, (char*)&i);
+    vector_push(&vec, (char*)&i);
 
   for(int i = 0; i < 20; i++){
     int a = 20 - i;
@@ -215,7 +215,7 @@ inline void Vector::vectorPop() {
   vector_init(&vec, sizeof(int));
 
   for(int i = 0; i < 20; i++)
-    vector_emplace_back(&vec, (char*)&i);
+    vector_push(&vec, (char*)&i);
   
   
 
@@ -233,7 +233,7 @@ inline void Vector::vectorPop() {
 
 
 
-inline void Vector::vectorEmplaceBack() {
+inline void Vector::vectorPush() {
   struct vector vec;
   vector_init(&vec, sizeof(int));
 
@@ -241,13 +241,13 @@ inline void Vector::vectorEmplaceBack() {
   int b[20] = {0};
 
   for(int i = 0; i < 20; i++)
-    vector_emplace_back(&vec, (char*)&a[i]);
+    vector_push(&vec, (char*)&a[i]);
   
   for(int i = 0; i < 20; i++)
     vector_get(&vec, (char*)&b[i], i);
   
   for(int i = 0; i < 20; i++)
-    assert.equal("Vector::vectorEmplaceBack", b[i], a[i]);
+    assert.equal("Vector::vectorPush", b[i], a[i]);
 
   vector_destroy(&vec);
 };
