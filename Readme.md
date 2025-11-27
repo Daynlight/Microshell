@@ -23,7 +23,7 @@ This is small shell build on threads optimized for parallel operations and data 
 - [Usage](#usage)
 - [Diagram](#diagram)
 - [Components](#components)
-  - [Error Codes](#error-codes)
+  - [ProgramCodes](#programcodes)
   - [Log System (SINGLETON)](#log-system-singleton)
   - [Microshell Initialize](#microshell-initialize)
   - [Microshell Destroy](#microshell-destroy)
@@ -35,17 +35,39 @@ This is small shell build on threads optimized for parallel operations and data 
   - [Own Commands](#own-commands)
   - [Output Layer](#output-layer)
 - [Error Handling](#error-handling-32)
+- [ProgramCodes](#programcodes-1)
 - [Structures](#structures)
   - [Vector](#vector)
   - [String](#string)
 - [Tests](#tests)
+- [Prerequisites](#prerequisites)
 - [Features](#features)
+
 
 
 ---
 
 
 ## Installation
+1. Download from github
+    ```bash
+      git clone https://github.com/Daynlight/Microshell.git
+    ```
+2. Build with cmake
+    ```bash
+      mkdir build/
+      cd build/
+      cmake ..
+      cmake --build .
+    ```
+3. Run Tests
+    ```bash
+      ctest
+    ```
+4. Run Microshell
+    ```bash
+      ./Microshell/Microshell
+    ```
 
 
 ---
@@ -391,6 +413,14 @@ Used for saving dynamic size names and path.
 
 
 ## Tests
+
+
+---
+
+
+## Prerequisites
+  - cmake
+  - git
 
 
 ---
