@@ -9,6 +9,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(Microshell)
 
 
+add_subdirectory(Examples)
+
+
 enable_testing()
 
 add_subdirectory(Tests/UnitTests)

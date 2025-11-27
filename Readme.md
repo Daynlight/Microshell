@@ -20,8 +20,12 @@ This is small shell build on threads optimized for parallel operations and data 
 - [Screenshots](#screenshots)
 - [TOC](#toc)
 - [Installation](#installation)
+- [Tests](#tests)
+  - [Running Tests](#running-tests)
+  - [Current Tests:](#current-tests)
 - [Usage](#usage)
 - [Diagram](#diagram)
+- [Architecture Overview](#architecture-overview)
 - [Components](#components)
   - [ProgramCodes](#programcodes)
   - [Log System (SINGLETON)](#log-system-singleton)
@@ -34,14 +38,23 @@ This is small shell build on threads optimized for parallel operations and data 
   - [Process Thread](#process-thread)
   - [Own Commands](#own-commands)
   - [Output Layer](#output-layer)
-- [Error Handling](#error-handling-32)
 - [ProgramCodes](#programcodes-1)
 - [Structures](#structures)
   - [Vector](#vector)
   - [String](#string)
-- [Tests](#tests)
+- [Error Handling](#error-handling-35)
+- [Decision Decisions](#decision-decisions)
+- [Concurrency](#concurrency)
+- [Trade-offs](#trade-offs)
+- [Future](#future)
+- [Stability](#stability)
+- [Strategic Parts](#strategic-parts)
+- [Limitations](#limitations-2)
 - [Prerequisites](#prerequisites)
+- [Code Philosophy](#code-philosophy)
 - [Features](#features)
+- [To do:](#to-do)
+- [Cat](#cat)
 
 
 
@@ -68,6 +81,28 @@ This is small shell build on threads optimized for parallel operations and data 
     ```bash
       ./Microshell/Microshell
     ```
+---
+
+
+## Tests
+### Running Tests
+  ```bash
+    cd build/
+    ctest
+  ```
+### Current Tests:
+- Unit Tests
+  - Structures
+    - Vector 
+      - Init, Destroy
+      - Resize, Reserve, Shrink, Alloc, Fit
+      - Push, Pop
+      - Erase, Clean
+      - Set, Get
+      - Copy
+- Integration Tests
+  - Structures
+    - String []
 
 
 ---
@@ -83,9 +118,16 @@ This is small shell build on threads optimized for parallel operations and data 
 ![Diagram](docs/Architecture.svg)
 
 
+---
 
 
+## Architecture Overview
 
+
+---
+
+
+<!-- # Phase 1 MVP -->
 ## Components
 ### ProgramCodes
 ##### Responsibility
@@ -115,6 +157,9 @@ This is small shell build on threads optimized for parallel operations and data 
 
 
 ### Microshell Destroy
+##### Responsibility
+##### Functions
+##### Error Handling
 
 
 
@@ -296,12 +341,6 @@ This is small shell build on threads optimized for parallel operations and data 
 ---
 
 
-## Error Handling
-
-
----
-
-
 ## ProgramCodes
 
 
@@ -345,11 +384,8 @@ Vector is dynamic array that allows storing dynamic data that can change with ti
 
 ##### Limitations:
 
-##### Notes:
-- [ ] Change loops to memcpy 
-- [ ] Optimization
-- [ ] Error checking
-- [ ] Edge cases
+##### Usage:
+
 
 
 ### String 
@@ -399,20 +435,71 @@ Used for saving dynamic size names and path.
 - We can't detect in ```C``` if ptr is initialized. But after initialization and destroy we set ptr to ```NULL```. Good practice is to initialize after creation.
 
 ##### Usage:
+  ```cpp
+    printf("== Concat Example ==\n");
 
-##### Notes:
-- [x] Shrink after erase and concat.
-- [x] Find edge case for string and el sizes.
-- [ ] Change loops to memcpy
-- [ ] Edge cases
-- [ ] Optimization
-- [ ] Error codes.
+    struct string string;
+    char initial[] = "Hello ";
+    char initial2[] = "World";
+    
+    string_init_initial(&string, initial);
+
+    string_concat(&string, initial2);
+
+    printf("%s\n", string_get_ptr(&string));
+
+    string_destroy(&string);
+  ```
+  [More Here](Examples/Structures/string.h)
 
 
 ---
 
 
-## Tests
+## Error Handling
+When Error occur we log it and return error value from ```ProgramCodes``` this allows us to track error path.
+
+
+---
+
+
+## Decision Decisions
+
+
+---
+
+
+## Concurrency
+
+
+---
+
+
+## Trade-offs
+
+
+---
+
+
+## Future
+
+
+---
+
+
+## Stability
+
+
+---
+
+
+## Strategic Parts
+
+
+---
+
+
+## Limitations
 
 
 ---
@@ -421,6 +508,27 @@ Used for saving dynamic size names and path.
 ## Prerequisites
   - cmake
   - git
+  - c++23
+
+
+---
+
+
+
+## Code Philosophy
+1. Strict and logical function placement
+2. Consistency naming
+3. Edge-cases
+4. UnitTests, IntegrationTests, StressTests, RegressionTests
+5. CI/CD - CodeQL, Ctests, Release Build
+6. Everything included in code is described in docs
+7. Performance Consideration
+8. Error propagation handling
+9. No static numbers every magic value in ```Setting.h```
+10. Logging where possible
+11. Asymptotic and Amortized Complexities
+12. We tastes all structures and core modules
+13. Benchmarking
 
 
 ---
@@ -434,6 +542,7 @@ Used for saving dynamic size names and path.
 - [ ] ^ execute form PATH: ```fork + exec*()```
 - [ ] ^ Error Comuniact: When can't parsee command
 - [ ] ^ help: Info + Features + Commands
+- [ ] ^ two more commands
 - [ ] Data I/O
 - [ ] History Controller
 - [ ] Prefix Controller
@@ -445,6 +554,38 @@ Used for saving dynamic size names and path.
 - [ ] UI Error Handler
 - [ ] coloring text for params, "", (), {}. [].
 - [ ] arrows for history/autocomplete
-- [ ] ^ two more commands
 - [ ] cp
 - [ ] Windows integration (Cross-Platform update)
+- [ ] | pipes or execution plan
+
+
+---
+
+
+## To do:
+- [x] (String) - Shrink after erase and concat.
+- [x] (String) - Find edge case for string and el sizes.
+- [ ] (String) - Optimize Shrink concat.
+- [ ] (String) - Change loops to memcpy.
+- [ ] (String) - Edge cases.
+- [ ] (String) - Optimization.
+- [ ] (String) - Error codes.
+- [ ] (String) - All examples
+- [ ] (String) - Stress Tests
+- [ ] (Vector) - Change loops to memcpy.
+- [ ] (Vector) - Optimization.
+- [ ] (Vector) - Error checking.
+- [ ] (Vector) - Edge cases.
+- [ ] (Vector) - All examples
+- [ ] (Vector) - Stress Tests
+- [ ] (Smart_PTR) - Create Structure and use in Vector.
+- [ ] Separate to Phases.
+- [ ] Fill docs.
+- [ ] Why it exists, for who it is etc.
+- [ ] Enhance looking part of readme.
+
+
+---
+
+## Cat
+<img src="https://i.pinimg.com/736x/29/41/b0/2941b0a266c0fc1cb388429315b9ccf9.jpg">
