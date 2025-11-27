@@ -583,6 +583,7 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 - [ ] Fill docs.
 - [ ] Why it exists, for who it is etc.
 - [ ] Enhance looking part of readme.
+- [ ] Github Setup Community Standards
 
 
 ---
