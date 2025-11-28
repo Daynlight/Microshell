@@ -84,25 +84,39 @@ It contains only **custom implementations** of **structures** and **algorithms**
 
 
 ## Installation
-1. Download from github
+1. **Download from github**
     ```bash
-      git clone https://github.com/Daynlight/Microshell.git
+    git clone https://github.com/Daynlight/Microshell.git
+    cd Microshell/
     ```
-2. Build with cmake
-    ```bash
-      mkdir build/
+2. **Dev**
+   1. **Build with cmake**
+      ```bash
+      mkdir -p build/
       cd build/
       cmake ..
       cmake --build .
-    ```
-3. Run Tests
-    ```bash
-      ctest
-    ```
-4. Run Microshell
-    ```bash
-      ./Microshell/Microshell
-    ```
+      cd ..
+      ```
+   2. **Run Tests**
+      ```bash
+      ctest build/
+      ```
+   3. **Run Microshell**
+      ```bash
+      ./build/Microshell/Microshell
+      ```
+3. **For usage**
+   1. **Install with cmake**
+      ```bash
+      mkdir build/
+      cd build/
+      cmake .. -DCMAKE_BUILD_TYPE=Release
+      cmake --build .
+      sudo cmake --install .
+      ```
+
+
 ---
 
 
@@ -528,9 +542,10 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 
 
 ## Prerequisites
-  - cmake
-  - git
-  - c++23
+- **CMake** – to build the project  
+- **Git** – to clone the repository  
+- **C compiler** – for building Microshell  
+- **C++23 compiler** – for building tests and examples  
 
 
 ---
@@ -579,6 +594,9 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 - [ ] cp
 - [ ] Windows integration (Cross-Platform update)
 - [ ] | pipes or execution plan
+- [ ] Run with params
+- [ ] Run script
+- [ ] Snippet for Microshell script 
 
 
 ---

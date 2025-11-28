@@ -16,3 +16,6 @@ enable_testing()
 
 add_subdirectory(Tests/UnitTests)
 add_subdirectory(Tests/IntegrationTests)
+
+
+install(TARGETS Microshell DESTINATION bin CONFIGURATIONS Release)
