@@ -16,7 +16,7 @@ It contains only **custom implementations** of **structures** and **algorithms**
 
 **For who it is**:
 * People who want to run many operations **simultaneously**.
-* People who want fast **execution of plans** generated automatically.
+* People who want fast **execution** of automatically generated plans.
 * People who want a **faster** shell.
 * People who want **easy-to-use** and **minimal** thread management.
 
@@ -60,8 +60,7 @@ It contains only **custom implementations** of **structures** and **algorithms**
   - [Running Tests](#running-tests)
   - [Current Tests:](#current-tests)
 - [Versions](#versions)
-- [Planed Features](#planed-features)
-- [To do:](#to-do)
+- [Tasks:](#tasks)
 - [Cat](#cat)
 
 
@@ -75,7 +74,7 @@ It contains only **custom implementations** of **structures** and **algorithms**
     git clone https://github.com/Daynlight/Microshell.git
     cd Microshell/
     ```
-2. **Dev**
+2. **Development**
    1. **Build with cmake**
       ```bash
       mkdir -p build/
@@ -195,15 +194,16 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 2. Consistency naming
 3. Edge-cases
 4. UnitTests, IntegrationTests, StressTests, RegressionTests
-5. CI/CD - CodeQL, Ctests, Release Build
-6. Everything included in code is described in docs
-7. Performance Consideration
-8. Error propagation handling
-9. No static numbers every magic value in ```Setting.h```
-10. Logging where possible
-11. Asymptotic and Amortized Complexities
-12. We tastes all structures and core modules
-13. Benchmarking
+5. Examples for structures
+6. CI/CD - CodeQL, Ctests, Release Build
+7. Everything included in code is described in docs
+8. Performance Consideration
+9. Error propagation handling
+10. No static numbers every magic value in ```Setting.h```
+11. Logging where possible
+12. Asymptotic and Amortized Complexities
+13. We tastes all structures and core modules
+14. Benchmarking
 
 
 ---
@@ -218,28 +218,35 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 ### Current Tests:
 - Unit Tests
   - Structures
-    - Vector 
-      - Init, Destroy
-      - Resize, Reserve, Shrink, Alloc, Fit
-      - Push, Pop
-      - Erase, Clean
-      - Set, Get
-      - Copy
+    <details>
+      <summary>Vector</summary>
+
+        - Init, Destroy
+        - Resize, Reserve, Shrink, Alloc, Fit
+        - Push, Pop
+        - Erase, Clean
+        - Set, Get
+        - Copy
+      </details>
 - Integration Tests
   - Structures
-    - String []
+    <details>
+      <summary>String</summary>
+
+    </details>
 
 
 ---
 
 
 ## Versions
+<details>
+  <summary>v1.0.0</summary>
+</details>
 
+<details>
+  <summary>Planned Features</summary>
 
----
-
-
-## Planed Features
 - [ ] User name
 - [ ] ^ encouragement sign {path} $
 - [ ] ^ cd
@@ -265,14 +272,23 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 - [ ] Run with params
 - [ ] Run script
 - [ ] Snippet for Microshell script 
-
+</details>
 
 ---
 
 
-## To do:
+## Tasks:
+<details>
+  <summary>Done</summary>
+
 - [x] (String) - Shrink after erase and concat.
 - [x] (String) - Find edge case for string and el sizes.
+- [x] (Docs) Why it exists, for who it is etc.
+- [x] (Docs) Move Architecture
+</details>
+<details>
+  <summary>To do</summary>
+
 - [ ] (String) - Optimize Shrink concat.
 - [ ] (String) - Change loops to memcpy.
 - [ ] (String) - Edge cases.
@@ -289,14 +305,12 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 - [ ] (Vector) - Stress Tests
 - [ ] (Vector) - Amortized complexity
 - [ ] (Smart_PTR) - Create Structure and use in Vector.
-- [x] (Docs) Why it exists, for who it is etc.
-- [x] (Docs) Move Architecture
 - [ ] (Docs) Separate to Phases.
 - [ ] (Docs) Core Idea
 - [ ] (Docs) Enhance looking part of readme.
 - [ ] (Docs) Fill docs.
 - [ ] (GitHub) Github Setup Community Standards
-
+</details>
 
 ---
 
