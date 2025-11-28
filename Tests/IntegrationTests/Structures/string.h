@@ -18,10 +18,10 @@ public:
   void stringConcatString();
 
   void stringGet();
-  void stringFind();
-  void stringErase();
   void stringSet();
   void stringGetPtr();
+  void stringFind();
+  void stringErase();
 };
 
 
