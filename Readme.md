@@ -3,7 +3,29 @@
 </div>
 
 ## About
-This is small shell build on threads optimized for parallel operations and data batching. Main focus is to make it work for multiple operations at the same time. Contains only own implementations of structures no libs. Uses a lot of dynamic arrays.
+This is a **shell** built on **threads**, optimized for **parallel operations**, **data batching** and **concurrency between threads**.
+
+It optimizes shell operations by **splitting** tasks into **threads**, **batching data** for faster access, and supporting **cross-platform** use.
+
+It contains only **custom implementations** of **structures** and **algorithms** with no external libraries.
+
+**Why it exists**:
+* Typical shells work **line by line** what is slow.
+* Originally created as a **university assignment**, but I wanted to make it more **optimized** and **ambitious**.
+* Aiming for **cross-platform** compatibility.
+
+**For who it is**:
+* People who want to run many operations **simultaneously**.
+* People who want fast **execution of plans** generated automatically.
+* People who want a **faster** shell.
+* People who want **easy-to-use** and **minimal** thread management.
+
+**Main points**:
+* **Cross-platform** shell.
+* Fast **execution of plans**.
+* Fast **data access**.
+* Multiple plans running **simultaneously**.
+* Easy **control** of **data access** between threads.
 
 
 ---
@@ -581,7 +603,8 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 - [ ] (Smart_PTR) - Create Structure and use in Vector.
 - [ ] Separate to Phases.
 - [ ] Fill docs.
-- [ ] Why it exists, for who it is etc.
+- [x] Why it exists, for who it is etc.
+- [ ] Core Idea
 - [ ] Enhance looking part of readme.
 - [ ] Github Setup Community Standards
 
