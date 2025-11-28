@@ -32,6 +32,7 @@ It contains only **custom implementations** of **structures** and **algorithms**
 
 
 ## Screenshots
+<!-- Will be added -->
 
 
 ---
@@ -50,16 +51,16 @@ It contains only **custom implementations** of **structures** and **algorithms**
 - [Architecture Decision](#architecture-decision)
 - [Concurrency](#concurrency)
 - [Trade-offs](#trade-offs)
-- [Future](#future)
 - [Stability](#stability)
 - [Strategic Parts](#strategic-parts)
 - [Limitations](#limitations)
+- [Future](#future)
 - [Prerequisites](#prerequisites)
 - [Code Philosophy](#code-philosophy)
 - [Tests](#tests)
   - [Running Tests](#running-tests)
   - [Current Tests:](#current-tests)
-- [Versions](#versions)
+- [Versions Supports and Features](#versions-supports-and-features)
 - [Tasks:](#tasks)
 - [Cat](#cat)
 
@@ -85,7 +86,7 @@ It contains only **custom implementations** of **structures** and **algorithms**
       ```
    2. **Run Tests**
       ```bash
-      ctest build/
+      ctest --test-dir ./build/
       ```
    3. **Run Microshell**
       ```bash
@@ -99,6 +100,7 @@ It contains only **custom implementations** of **structures** and **algorithms**
       cmake .. -DCMAKE_BUILD_TYPE=Release
       cmake --build .
       sudo cmake --install .
+      cd ..
       ```
 
 
@@ -106,6 +108,7 @@ It contains only **custom implementations** of **structures** and **algorithms**
 
 
 ## Usage
+<!-- Will be added -->
 
 
 ---
@@ -117,20 +120,31 @@ It contains only **custom implementations** of **structures** and **algorithms**
 ---
 
 ## Architecture
-- [Architecture Phase1](docs/Architecture/Architecture.md)
+- [Phase 1](docs/Architecture/Architecture.md)
 
 
 ---
 
 
 ## ProgramCodes
+<!-- Will be added -->
 
 
 ---
 
 
 ## Error Handling
-When Error occur we log it and return error value from ```ProgramCodes``` this allows us to track error path.
+When an **error** occurs, we **log it** and **return an error** value from `ProgramCodes`. This allows us to track the **error path** and see what went wrong during execution.
+
+Before **command execution**, we save a **backup** of the previous data. If the command executes **successfully**, we remove this backup. This allows us to **retry a failing command** without rerunning the entire program, only the part that failed.
+
+If an **error occurs**, we first try to **resolve it automatically**. If all attempts **fail**, we stop with an error and restore the previous state.
+
+Every file change is first saved to `~/.microshell/<execution_name>/<id>`. After the execution plan completes **successfully**, we save these files in the desired **locations** and **remove the temporary folder**.
+
+Because we **run multiple threads**, we have to **merge changes correctly** and ensure that nothing is **overwritten accidentally**. More about this is explained in [Concurrency](#concurrency).
+
+We also save **logs** to `~/.microshell.log`, keeping the last **8000 lines**.
 
 
 ---
@@ -154,12 +168,6 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 ---
 
 
-## Future
-
-
----
-
-
 ## Stability
 
 
@@ -178,11 +186,18 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 ---
 
 
+## Future
+
+
+---
+
+
+
 ## Prerequisites
-- **CMake** – to build the project  
-- **Git** – to clone the repository  
-- **C compiler** – for building Microshell  
-- **C++23 compiler** – for building tests and examples  
+- **CMake** – to build the project.
+- **Git** – to clone the repository.
+- **C compiler** – for building Microshell.
+- **C++11 compiler** – for building tests and examples.
 
 
 ---
@@ -190,20 +205,22 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 
 
 ## Code Philosophy
-1. Strict and logical function placement
-2. Consistency naming
-3. Edge-cases
-4. UnitTests, IntegrationTests, StressTests, RegressionTests
-5. Examples for structures
-6. CI/CD - CodeQL, Ctests, Release Build
-7. Everything included in code is described in docs
-8. Performance Consideration
-9. Error propagation handling
-10. No static numbers every magic value in ```Setting.h```
-11. Logging where possible
-12. Asymptotic and Amortized Complexities
-13. We tastes all structures and core modules
-14. Benchmarking
+1. **Strict and logical placement** of functions and methods.
+2. **Consistent naming** conventions across the codebase.
+3. Comprehensive **UnitTests**, **IntegrationTests**, **StressTests**, and **RegressionTests**.
+4. Thorough **testing** of all **structures** and **core modules**.
+5. Provide **examples** for key data structures.
+6. **CI/CD integration**: CodeQL, CTests, and Release Build automation.
+7. Ensure **documentation** covers all implemented code.
+8. Prioritize **performance considerations** in algorithms and data structures.
+9. Track **asymptotic and amortized complexities** where relevant.
+10. **Benchmarking** whenever possible.
+11. Handle **edge cases** rigorously.
+12. **Error handling** and **error propagation** considered in all modules.
+13. Avoid **magic numbers**; store all constants in `Setting.h`.
+14. Implement **logging** for **testability** and debugging.
+15. Support **verbose logging mode** for deeper inspection.
+
 
 
 ---
@@ -212,34 +229,35 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 ## Tests
 ### Running Tests
   ```bash
-    cd build/
-    ctest
+    ctest --test-dir ./build/
   ```
 ### Current Tests:
 - Unit Tests
-  - Structures
-    <details>
-      <summary>Vector</summary>
+  <details>
+    <summary>Vector</summary>
 
-        - Init, Destroy
-        - Resize, Reserve, Shrink, Alloc, Fit
-        - Push, Pop
-        - Erase, Clean
-        - Set, Get
-        - Copy
-      </details>
+      - Init, Destroy
+      - Resize, Reserve, Shrink, Alloc, Fit
+      - Push, Pop
+      - Erase, Clean
+      - Set, Get
+      - Copy
+  </details>
 - Integration Tests
-  - Structures
-    <details>
-      <summary>String</summary>
+  <details>
+    <summary>String</summary>
 
-    </details>
+    - init, Destroy
+    - Concat
+    - Get, Set, Get pointer
+    - Find, Erase
+  </details>
 
 
 ---
 
 
-## Versions
+## Versions Supports and Features
 <details>
   <summary>v1.0.0</summary>
 </details>
@@ -255,6 +273,7 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 - [ ] ^ Error Comuniact: When can't parsee command
 - [ ] ^ help: Info + Features + Commands
 - [ ] ^ two more commands
+- [ ] load ~/.microshellrc
 - [ ] Data I/O
 - [ ] History Controller
 - [ ] Prefix Controller
@@ -283,8 +302,14 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 
 - [x] (String) - Shrink after erase and concat.
 - [x] (String) - Find edge case for string and el sizes.
-- [x] (Docs) Why it exists, for who it is etc.
-- [x] (Docs) Move Architecture
+- [x] (Docs) - Why it exists, for who it is etc.
+- [x] (Docs) - Move Architecture
+- [x] (Docs) - About section
+- [x] (Docs) - Installation section
+- [x] (Docs) - Error handling section
+- [x] (Docs) - Prerequisites section
+- [x] (Docs) - Code philosophy section
+- [x] (Docs) - Tests section
 </details>
 <details>
   <summary>To do</summary>
@@ -297,6 +322,7 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 - [ ] (String) - All examples
 - [ ] (String) - Stress Tests
 - [ ] (String) - Amortized complexity
+- [ ] (String) - Code Philosophy
 - [ ] (Vector) - Change loops to memcpy.
 - [ ] (Vector) - Optimization.
 - [ ] (Vector) - Error checking.
@@ -304,6 +330,7 @@ When Error occur we log it and return error value from ```ProgramCodes``` this a
 - [ ] (Vector) - All examples
 - [ ] (Vector) - Stress Tests
 - [ ] (Vector) - Amortized complexity
+- [ ] (Vector) - Code Philosophy
 - [ ] (Smart_PTR) - Create Structure and use in Vector.
 - [ ] (Docs) Separate to Phases.
 - [ ] (Docs) Core Idea
