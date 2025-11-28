@@ -197,7 +197,7 @@ We also save **logs** to `~/.microshell.log`, keeping the last **8000 lines**.
 - **CMake** – to build the project.
 - **Git** – to clone the repository.
 - **C compiler** – for building Microshell.
-- **C++11 compiler** – for building tests and examples.
+- **C++17 compiler** – for building tests and examples.
 
 
 ---
