@@ -147,7 +147,8 @@ Data are **loaded with batches**. First **n small batches** are **merged** into 
 
 
 ## Architecture
-- [Phase 1](docs/Architecture/Architecture.md)
+- [MVP](docs/Architecture/MVP/Architecture.md)
+- [Arch](docs/Architecture/Arch/Architecture.md)
 
 
 ---
@@ -298,6 +299,7 @@ We also save **logs** to `~/.microshell.log`, keeping the last **8000 lines**.
 - [ ] ^ Error Comuniact: When can't parsee command
 - [ ] ^ help: Info + Features + Commands
 - [ ] ^ two more commands
+- [ ] execution plan
 - [ ] load ~/.microshellrc
 - [ ] Data I/O
 - [ ] History Controller
@@ -312,7 +314,6 @@ We also save **logs** to `~/.microshell.log`, keeping the last **8000 lines**.
 - [ ] arrows for history/autocomplete
 - [ ] cp
 - [ ] Windows integration (Cross-Platform update)
-- [ ] | pipes or execution plan
 - [ ] Run with params
 - [ ] Run script
 - [ ] Snippet for Microshell script 
@@ -363,6 +364,7 @@ We also save **logs** to `~/.microshell.log`, keeping the last **8000 lines**.
 - [ ] (Docs) Enhance looking part of readme.
 - [ ] (Docs) Fill docs.
 - [ ] (GitHub) Github Setup Community Standards
+- [ ] MVP
 </details>
 
 ---
