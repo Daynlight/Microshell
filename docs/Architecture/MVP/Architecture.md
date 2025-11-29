@@ -20,6 +20,8 @@
 - [Structures](#structures)
   - [Vector](#vector)
   - [String](#string)
+  - [Unordered\_map](#unordered_map)
+  - [Priority Heap](#priority-heap)
 - [Features in this part](#features-in-this-part)
 
 
@@ -390,6 +392,53 @@ Used for saving dynamic size names and path.
 ##### Usage:
   [Here](../../../Examples/Structures/string.h)
 
+
+
+
+### Unordered_map
+
+##### IDEA
+
+##### How it works:
+
+##### In this project:
+
+##### Fields:
+
+##### Complexity:
+
+##### Functions:
+
+##### Error Handling:
+
+##### Limitations:
+
+##### Usage:
+
+
+
+### Priority Heap
+
+##### IDEA
+
+##### How it works:
+
+##### In this project:
+
+##### Fields:
+
+##### Complexity:
+
+##### Functions:
+
+##### Error Handling:
+
+##### Limitations:
+
+##### Usage:
+
+
+---
 
 
 ## Features in this part
