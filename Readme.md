@@ -27,6 +27,10 @@ It contains only **custom implementations** of **structures** and **algorithms**
 * Multiple plans running **simultaneously**.
 * Easy **control** of **data access** between threads.
 
+**Innovations**:
+* Synchronized batch processing across threads.
+* Thread-block execution.
+* Storing only changes.
 
 ---
 
@@ -45,6 +49,7 @@ It contains only **custom implementations** of **structures** and **algorithms**
 - [Installation](#installation)
 - [Usage](#usage)
 - [Core Idea](#core-idea)
+- [New Bash Dialect](#new-bash-dialect)
 - [Architecture](#architecture)
 - [ProgramCodes](#programcodes)
 - [Error Handling](#error-handling)
@@ -115,9 +120,31 @@ It contains only **custom implementations** of **structures** and **algorithms**
 
 
 ## Core Idea
+Core idea for **parallelism** is to make new **bash dialect**. Dialect will specify **block of executions**. Each **inside block** work **line by line**. **Blocks** work in **parallel**. We can specify **blocks dependency**. Which block have to **wait** for other. What data it require **files**, **env variables**. 
+
+Each block stores **changes** in **files**, **env variables** and are **passed** to another **blocks** that are **dependant** on it. No data are saved **directly** back after block ends and everything is **synced** after **whole program ends** with changes.
+
+If we can predict **env variables** for example via **cd** we **bake** it in **execution plan**. This saved **variables** allows us to **skip waiting** for thread end. Because we can just **start running** on this **baked** ones that never changes.
+
+Of course **all changes** are **strictly isolated** and nothing is **changed in files** before program **successfully ends**. If we use **too much memory** we save **not often** used **changes** in ```~/.microshell/temp/<pid>```.
+
+For now each **block**, **dependency between them**, what **files**, **env variables**, **baked variables** are specified by **programmers**. But in **future** it will be **detected** and **created automatic**. It will **analyze scripts** and create **execution plans**. Of course **programmers** must **approve each execution plan**.
+
+Each **command** that users **create** are **saved** in ```~/.microshell/plans/<name>``` and ```~/.microshell/plans/raw/<name>```. They can be **edited**, **reused**, **removed**.
+
+Data are **loaded with batches**. First **n small batches** are **merged** into one **mid size batch** in **memory**. Than each **process** is runs on **this data**. If **two** or **more** threads uses one **file** we operate on them in **execution order**. Next **process** in **execution order** uses **changes** from **previous threads**. **Threads** operate on **specific parts of blocks** that means: **thread 1** first **thread** operate on **block k**, **thread 2** operate on **batch k - 1** etc. **Sequences of read** are **consider** in this as **one thread** and **every write** separates it. **Threads** are in **sync** with **each other**. This **makes it** a bit **slower** but **keep data consistency**. **Changes** are **isolated not directly saved to file**. After **program** end it is **commit** to file.
+
+**Cross-platform** is **organized** via **interfaces** we create one **interface** that specify most **important operations** for **system dependant operations**. And each **platform creates** his **inherence class** this allows easy **scalability**.
 
 
 ---
+
+
+## New Bash Dialect
+
+
+---
+
 
 ## Architecture
 - [Phase 1](docs/Architecture/Architecture.md)
@@ -136,13 +163,11 @@ It contains only **custom implementations** of **structures** and **algorithms**
 ## Error Handling
 When an **error** occurs, we **log it** and **return an error** value from `ProgramCodes`. This allows us to track the **error path** and see what went wrong during execution.
 
-Before **command execution**, we save a **backup** of the previous data. If the command executes **successfully**, we remove this backup. This allows us to **retry a failing command** without rerunning the entire program, only the part that failed.
+We store only **changes** that **minimize memory usage** and provides **isolation**.
 
-If an **error occurs**, we first try to **resolve it automatically**. If all attempts **fail**, we stop with an error and restore the previous state.
+Only if program ends **successfully** than we commit **changes** to files.
 
-Every file change is first saved to `~/.microshell/<execution_name>/<id>`. After the execution plan completes **successfully**, we save these files in the desired **locations** and **remove the temporary folder**.
-
-Because we **run multiple threads**, we have to **merge changes correctly** and ensure that nothing is **overwritten accidentally**. More about this is explained in [Concurrency](#concurrency).
+If an **error occurs**, we first try to **resolve it automatically**. If all attempts **fail**, we stop with an error and don't commit changes.
 
 We also save **logs** to `~/.microshell.log`, keeping the last **8000 lines**.
 
@@ -306,6 +331,7 @@ We also save **logs** to `~/.microshell.log`, keeping the last **8000 lines**.
 - [x] (Docs) - Move Architecture
 - [x] (Docs) - About section
 - [x] (Docs) - Installation section
+- [x] (Docs) - Core Idea section
 - [x] (Docs) - Error handling section
 - [x] (Docs) - Prerequisites section
 - [x] (Docs) - Code philosophy section
