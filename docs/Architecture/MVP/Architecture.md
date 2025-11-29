@@ -123,7 +123,7 @@
 ##### Functions
   * getChar();
   * wait();
-  * SwitchTab(); - Execution Plan Editor, Command Line
+  * SwitchTab(); - Execution Plan Editor, Command Line, Logs
 ##### Error Handling
   * If error print error and skip.
 
@@ -202,36 +202,61 @@
 ### Output Layer
 #### Compose Terminal
 ##### Responsibility
+  * adding changes to terminal form dif buffers.
+  * storing last state.
 ##### Functions
+  * fetchChanges();
+  * applyChanges();
 ##### Error Handling
+  * If error on fetch force log error.
+  * If error draw in terminal error clear rerender last frame log error from draw in terminal error.
 
 #### Draw in Terminal
 ##### Responsibility
+  * Setting cursor in terminal.
+  * render line with changes.
 ##### Functions
+  * updateLine();
 ##### Error Handling
+  * return ProgramCodesDrawInTerminalERROR;
 
 
 
 ### Commands
 #### cd
 ##### Responsibility
+  * changes path.
+  * changing env variable.
 ##### Functions
+  * run();
+  * updateVariable(path);
 ##### Error Handling
+  * don't change path and return ProgramCodesCdERROR with error log;
 
 #### exit
 ##### Responsibility
+  * stopping program.
 ##### Functions
+  * run();
 ##### Error Handling
+  * return ProgramCodesExitERROR and force end;
+
 
 #### help
 ##### Responsibility
+  * Prints info about author, features and help.
 ##### Functions
+  * run();
 ##### Error Handling
+  * return ProgramCodesHelpERROR and print error;
 
 #### others
 ##### Responsibility
+  * runs commands from PATH.
 ##### Functions
+  * run(command);
 ##### Error Handling
+  * print log and return ProgramCodesPathCommandERROR;
 
 
 ---
@@ -239,6 +264,11 @@
 
 ## ProgramCodes
   * ProgramCodesInitializationERROR; 
+  * ProgramCodesDrawInTerminalERROR;
+  * ProgramCodesCdERROR;
+  * ProgramCodesExitERROR;
+  * ProgramCodesHelpERROR;
+  * ProgramCodesPathCommandERROR;
 
 
 ---
