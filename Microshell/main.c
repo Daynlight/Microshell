@@ -1,8 +1,3 @@
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
 /////////////////////////////////////////////////////////////
 ////////////////////////// Includes /////////////////////////
 /////////////////////////////////////////////////////////////
@@ -10,21 +5,29 @@ extern "C" {
 #include "Structures/Vector/vector.h"
 #include "Structures/String/string.h"
 
+#include "globals.h"
+
+#include "flags.h"
+
 /////////////////////////////////////////////////////////////
 /////////////////////// MainExecutable //////////////////////
 /////////////////////////////////////////////////////////////
 
-#ifndef HEADER 
 
-int main(){
+int main(int argc, char *argv[]){
+  init_globals();
+  process_flags(argc, argv);
 
+
+
+  while (running){
+    printf("[%s]$ ", string_get_ptr(&path));
+    char a = getchar();
+  };
+  
+
+  
+  destroy_globals();
 
   return 0;
 };
-
-#endif
-
-
-#ifdef __cplusplus
-}
-#endif

@@ -27,6 +27,7 @@ void string_concat(struct string* dest, const char* src);
 void string_concat_string(struct string* dest, const struct string* src);
 const int string_find(const struct string* string, const char* el);
 void string_erase(struct string* string, const int x, const int y);
+struct vector string_split(struct string* string, char sep);
 
 const char* string_get_ptr(const struct string* string);
 
@@ -189,6 +190,42 @@ void string_erase(struct string* string, const int x, const int y){
   vector_erase(&string->data, x, y);
 
   vector_shrink(&string->data);
+};
+
+
+
+
+
+
+struct vector string_split(struct string* string, char sep){
+  struct vector split_string;
+  vector_init(&split_string, sizeof(struct string));
+
+  struct string temp;
+  string_init(&temp);
+  char current = 0;
+  
+  for(int i = 0; i < string->data.size; i++){
+    current = string_get(string, i);
+    
+    if(current == sep){
+      vector_push(&split_string, (const char*)(&temp));
+      string_erase(&temp, 0, temp.data.size - 1);
+      continue;
+    };
+  
+    vector_push(&temp.data, (char*)(&current));
+  };
+
+  for(int i = 0; i < split_string.size; i++){
+    struct string a;
+    vector_get(&split_string, (char *)(&a), i);  
+    printf("%s", string_get_ptr(&a));
+  
+  }
+  exit(0);
+
+  return split_string;
 };
 
 
