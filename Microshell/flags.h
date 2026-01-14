@@ -6,7 +6,6 @@
 
 void process_flags(int argc, char *argv[]){
   string_init_initial(&path, argv[0]);
-  
 };
 
 
