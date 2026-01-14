@@ -8,6 +8,8 @@
 #include "globals.h"
 
 #include "flags.h"
+#include "input.h"
+#include "commands.h"
 
 /////////////////////////////////////////////////////////////
 /////////////////////// MainExecutable //////////////////////
@@ -17,12 +19,17 @@
 int main(int argc, char *argv[]){
   init_globals();
   process_flags(argc, argv);
-
+  
+  struct string command;
 
 
   while (running){
     printf("[%s]$ ", string_get_ptr(&path));
-    char a = getchar();
+    
+    getUserInput(&command);
+
+    runCommand(&command);
+
   };
   
 
