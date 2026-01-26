@@ -8,3 +8,12 @@
 | ✅ | 6 pkt. |	✓ |	przyjmować polecenia odwołujące się przez nazwę do programów znajdujących się w katalogach opisanych wartością zmiennej środowiskowej PATH oraz umożliwiać wywołanie tych skryptów i programów z argumentami (czyt. ```fork()``` + ```exec*()```); |
 | ✅ | 4 pkt |	✓ |	wypisywać komunikat błędu, gdy niemożliwe jest poprawne zinterpretowanie polecenia; |
 | ⬜ | 6 pkt. | 	 |	posiadać tzw. dodatkowe bajery, np. wyświetlanie loginu aktualnie zalogowanego użytkownika, obsługę kolorów, obsługę argumentów w cudzysłowach, sensowną obsługę sygnałów (np. Ctrl+Z), obsługę historii poleceń poprzez strzałki, uzupełnianie składni, itp.; punkty są przyznawane w zależności od stopnia skomplikowania problemu. |
+
+
+
+
+- [x] login
+- [x] host
+- [x] kolory
+- [ ] Ctlr + Z
+- [ ] uzupełnianie
