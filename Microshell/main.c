@@ -21,6 +21,9 @@ int main(int argc, char *argv[]){
   process_flags(argc, argv);
   
   struct string command;
+  struct string move;
+  string_init_initial(&move, "../../../docs");
+  moveDir(&move);
 
 
   while (running){
