@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
 
 
   while (running){
-    printf("[%s]$ ", string_get_ptr(&path));
+    printf("\e[32m[%s]\e[0m$ ", string_get_ptr(&path));
     
     getUserInput(&command);
 

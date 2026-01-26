@@ -24,6 +24,7 @@ void runUnknow(struct string* command){
     char a = string_get(command, i);
     
     if(a == ' '){
+      argv[j][k] = '\0';
       j++;
       k = 0;
       argv[j] = malloc(255);
@@ -33,12 +34,20 @@ void runUnknow(struct string* command){
     argv[j][k] = a;
     k++;
   };
+  
+  argv[j][k] = '\0';
+  argv[j + 1] = NULL;
 
 
   pid_t pid = fork();
 
   if (pid == 0){
     execvp(argv[0], argv);
+    fprintf(stderr, "\e[91m");
+    fprintf(stderr, "Command: %s\n", string_get_ptr(command));
+    perror("");
+    fprintf(stderr, "\e[00m");
+    exit(1);
   }
   else if (pid > 0){
     wait(NULL);
@@ -47,7 +56,7 @@ void runUnknow(struct string* command){
     perror("fork");
   }
 
-  for(int i = 0; i < j; i++){
+  for(int i = 0; i <= j; i++){
     free(argv[i]);
   }
 
