@@ -8,7 +8,10 @@ set(src
 )
 
 add_executable(Microshell ${src})
+target_include_directories(Microshell PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
+add_executable(MicroshellTests Tests/main.c)
+target_include_directories(MicroshellTests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 add_custom_command(
@@ -27,3 +30,5 @@ add_custom_command(
 add_custom_target(preprocess ALL
     DEPENDS ${CMAKE_BINARY_DIR}/main.pp.c
 )
+
+install(TARGETS Microshell DESTINATION bin CONFIGURATIONS Release)

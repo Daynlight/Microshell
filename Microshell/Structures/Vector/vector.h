@@ -7,11 +7,6 @@
 #include <string.h>
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
 
 struct vector{
   unsigned int cap;
@@ -325,13 +320,5 @@ void vector_copy(const struct vector *src, struct vector *dest) {
     return;
 };
 
-
-
-
-
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

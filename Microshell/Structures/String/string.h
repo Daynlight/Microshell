@@ -2,11 +2,6 @@
 #define STRING_H
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
 #include "../Vector/vector.h"
 
 
@@ -57,6 +52,12 @@ void string_init_initial(struct string *string, const char *initial_data) {
   
   for(int i = 0; i < initial_data_size; i++)
     vector_push(&string->data, &initial_data[i]);
+
+  char el;
+  vector_get(&string->data, &el, string->data.size - 1);
+  if(el != 0)
+    vector_push(&string->data, (char*)&"\0");
+
 };
 
 
@@ -65,6 +66,7 @@ void string_init_initial(struct string *string, const char *initial_data) {
 
 
 void string_init_initial_string(struct string *string, const struct string *initial_data) {
+  string_init(string);
   vector_copy(&initial_data->data, &string->data);
 };
 
@@ -109,7 +111,7 @@ void string_set(struct string* string, const char data, const unsigned int index
 
 
 void string_concat(struct string *dest, const char *src){
-  if(strlen(src) <= 0)
+  if(strlen(src) <= 1)
     return;
   
   struct string temp;
@@ -132,6 +134,9 @@ void string_concat_string(struct string *dest, const struct string *src) {
   unsigned int additional_size = src->data.size;
 
   vector_reserve(&dest->data, additional_size);
+
+  char el;
+  vector_pop(&dest->data, &el);
 
   for(unsigned int i = 0; i < additional_size; i++){
     char at = string_get(src, i);
@@ -205,9 +210,5 @@ const char* string_get_ptr(const struct string* string){
 
 
 
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

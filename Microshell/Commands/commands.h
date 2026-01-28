@@ -1,0 +1,109 @@
+#ifndef COMMANDS_H
+#define COMMANDS_H
+
+/////////////////////////////////////////////////////////////
+////////////////////////// Includes /////////////////////////
+/////////////////////////////////////////////////////////////
+
+#include <unistd.h>
+#include <sys/wait.h>
+
+#include "../Structures/String/string.h"
+#include "../Structures/Vector/vector.h"
+
+#include "Exit/exit.h"
+#include "Help/help.h"
+
+
+
+/////////////////////////////////////////////////////////////
+///////////////////////// Functions /////////////////////////
+/////////////////////////////////////////////////////////////
+
+
+void runUnknow(struct string* command){
+  char* argv[255];
+  int j = 0;
+  int k = 0;
+
+  argv[j] = malloc(255);
+
+  for(int i = 0; i < command->data.size; i++){
+    char a = string_get(command, i);
+    
+    if(a == ' '){
+      argv[j][k] = '\0';
+      j++;
+      k = 0;
+      argv[j] = malloc(255);
+      continue;
+    }
+
+    argv[j][k] = a;
+    k++;
+  };
+  
+  argv[j][k] = '\0';
+  argv[j + 1] = NULL;
+
+  pid_t pid = fork();
+
+  if (pid == 0){
+    execvp(argv[0], argv);
+    fprintf(stderr, "\e[91m");
+    fprintf(stderr, "Command: %s\n", string_get_ptr(command));
+    perror("");
+    fprintf(stderr, "\e[00m");
+    exit(1);
+  }
+  else if (pid > 0){
+    wait(NULL);
+  }
+  else{
+    perror("fork");
+  }
+
+  for(int i = 0; i <= j; i++){
+    free(argv[i]);
+  };
+};
+
+
+void runCommand(struct string* command){
+
+  if(strcmp(string_get_ptr(command), "exit") == 0)
+    commands_exit();
+
+  else if(strcmp(string_get_ptr(command), "help") == 0)
+    commands_help();
+
+  else if(command->data.size >= 3 && 
+          command->data.data[0] == 'c' && 
+          command->data.data[1] == 'd' && 
+          command->data.data[2] == ' '){
+    struct string move;
+    string_init_initial_string(&move, command);
+    string_erase(&move, 0, 2);
+    
+    path_move(&path, &move);
+
+    string_destroy(&move);
+  }
+
+  else if(strcmp(string_get_ptr(command), "cwd") == 0){
+    struct path temp;
+    path_init(&temp);
+    path_cwd(&temp);
+    printf("cwd: %s\n", path_get_ptr(&temp));
+    path_destroy(&temp);
+  }
+
+  else if(strcmp(string_get_ptr(command), "cls") == 0)
+    printf("\033[H\033[J");
+
+  else
+    runUnknow(command);
+
+};
+
+#endif
