@@ -17,3 +17,10 @@
 - [x] kolory
 - [ ] Ctlr + Z
 - [ ] uzupełnianie
+
+
+TODO:
+- [ ] path struct
+- [ ] clean up
+- [ ] edge cases
+- [ ] history?

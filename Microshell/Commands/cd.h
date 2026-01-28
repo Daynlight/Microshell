@@ -14,61 +14,30 @@ void setDir(const char* new_path){
   string_init_initial(&path, new_path);
 };
 
-const char* moveDir(struct string *move){
-  char buffer[255];
-  buffer[0] = 0;
-  int j = 0;
-
-  for(int i = 0; i < move->data.size; i++){
-    char el = string_get(move, i);
-
-    if(el == '/'){
-      if(j == 2 && buffer[0] == '.' && buffer[1] == '.'){
-        char a = 0;
-        int k = 0;
-        while(a != '/'){
-          a = string_get(&path, path.data.size - k);
-          k++;
-        };
-
-        string_erase(&path, path.data.size - k + 1, 0);
-      }
-      else{
-        string_concat(&path, "/");
-        string_concat(&path, buffer);
-      }
-      
-
-      buffer[0] = 0;
-      j = 0;
-      continue;
-    }
+void moveDir(struct string *move){
+  struct string new_path;
     
-    buffer[j] = string_get(move, i);
-    buffer[j + 1] = 0;
-    j++;
-  };
-
-
-
-
-
-  if(j == 2 && buffer[0] == '.' && buffer[1] == '.'){
-    char a = 0;
-    int k = 0;
-    while(a != '/'){
-      a = string_get(&path, path.data.size - k);
-      k++;
-    };
-
-    string_erase(&path, path.data.size - k + 1, 0);
-  }
+  if(string_get(move, 0) == '/')
+    string_init_initial_string(&new_path, move);
   else{
-    string_concat(&path, "/");
-    string_concat(&path, buffer);
+    string_init_initial_string(&new_path, &path);
+    char s[2] = "/";
+    if(string_get(&path, path.data.size - 1) != '/')
+      string_concat(&new_path, s);
+    string_concat_string(&new_path, move);
+    // string_concat(&new_path, s);
   };
 
-  chdir(string_get_ptr(&path));
+  chdir(string_get_ptr(&new_path));
+
+
+  char cwd[4098];
+
+  if (getcwd(cwd, sizeof(cwd)) != NULL) {
+    string_init_initial(&path, cwd);
+  } else {
+    perror("getcwd");
+  }
 }; 
 
 

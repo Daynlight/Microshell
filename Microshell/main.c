@@ -22,7 +22,8 @@ int main(int argc, char *argv[]){
   
   struct string command;
   struct string move;
-  string_init_initial(&move, "../../../docs");
+  string_init_initial(&move, "../../docs");
+  // string_init_initial(&move, "/home");
   moveDir(&move);
 
 

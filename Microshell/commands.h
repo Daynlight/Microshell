@@ -9,7 +9,7 @@
 
 #include "Commands/exit.h"
 #include "Commands/help.h"
-
+#include "Commands/cd.h"
 
 
 
@@ -68,6 +68,14 @@ void runCommand(struct string* command){
     commands_exit();
   else if(strcmp(string_get_ptr(command), "help") == 0)
     commands_help();
+  else if(command->data.size >= 2 && command->data.data[0] == 'c' && command->data.data[1] == 'd'){
+    struct string new_path;
+    string_init_initial_string(&new_path, command);
+    string_erase(&new_path, 0, 2);
+    printf("%s\n", string_get_ptr(&new_path));
+    moveDir(&new_path);
+    string_destroy(&new_path);
+  }
   else
     runUnknow(command);
 
