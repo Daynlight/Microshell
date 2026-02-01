@@ -30,5 +30,3 @@ add_custom_command(
 add_custom_target(preprocess ALL
     DEPENDS ${CMAKE_BINARY_DIR}/main.pp.c
 )
-
-install(TARGETS Microshell DESTINATION bin CONFIGURATIONS Release)
